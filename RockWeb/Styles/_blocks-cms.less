@@ -1,0 +1,127 @@
+﻿/*
+    Used to manage styles for specific blocks.
+
+    1. HTML Content - block to edit HTML on a page
+    2. My Account - Used on external sites for setting person details
+    3. Lava Debug - Used to style the lava debug panel
+    4. Social Tools - Used for showing social media links
+*/
+
+
+// 1. HTML Content
+// -------------------------
+
+.htmlcontent-edit-header {
+    padding: @spacing-sm-px @spacing-md-px 0 @spacing-md-px;
+
+    .html-content-approve {
+        float: right;
+        margin-top: 4px;
+    }
+}
+
+.codeeditor-header {
+    /*position: absolute;
+    top: -4px;
+    right: 0;*/
+    
+    .picker-mergefield {
+        float: right;
+    }
+
+    .picker .picker-label {
+        padding: 2px 6px;
+    }
+
+}
+
+
+// 2. My Account
+// -------------------------
+.my-account {
+    margin-bottom: @spacing-md-px;
+    
+    .photo img {
+        width: 100%;
+    }
+}
+
+// 3. Lava Debug
+// -------------------------
+.lava-debug {
+    clear: both;
+    margin-top: 24px;
+
+    code {
+        background-color: darken(@state-info-bg, 5%);
+        color: @state-info-text;
+    }
+
+    p {
+        margin-bottom: 10px;
+        font-weight: normal !important;
+
+        &.attributes {
+            margin-bottom: 0;
+        }
+    }
+
+    .lava-debug-key {
+        font-weight: @font-weight-semibold;
+    }
+
+    .panel.panel-lavadebug {
+        border: 0;
+
+        .panel-heading {
+            background-color: darken(@state-info-bg, 3%);
+            color: @state-info-text;
+            border: 0;
+            cursor: pointer;
+
+            &.collapsed i:before {
+                content: "\f078";
+            }
+        }
+
+        .panel-body{
+            background-color: lighten(@state-info-bg, 3%);
+            
+        }
+    }
+
+}
+
+// 4. Social Tools
+// -------------------------
+.socialsharing {
+    margin-top: 12px;
+    padding: 0;
+
+    li {
+        display: inline-block;
+
+        .socialicon {
+            color: #fff;
+            padding: 8px 6px;
+            border-radius: 20px;
+            font-family: FontAwesome;
+
+            &:hover {
+                text-decoration: none;
+            }
+        }
+
+        .socialicon-facebook {
+            background-color: #4C66A4;
+        }
+
+        .socialicon-twitter {
+            background-color: #2C77BA;
+        }
+
+        .socialicon-email {
+            background-color: #209904;
+        }
+    }
+}
