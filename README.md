@@ -1,4 +1,5 @@
-Rockit
-=======
+This is the repo for Central Christian Church's Room Management Plugin.
 
-Rock Software Development Kit (SDK)
+Trello
+=============
+https://trello.com/b/sGR3b9jA/room-management-rock-plugin
