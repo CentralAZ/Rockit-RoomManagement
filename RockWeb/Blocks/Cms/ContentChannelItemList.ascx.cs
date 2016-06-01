@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -92,6 +92,8 @@ namespace RockWeb.Blocks.Cms
 
                     gItems.Columns[1].HeaderText = startHeading;
                     gItems.Columns[3].HeaderText = startHeading;
+
+                    ddlStatus.Visible = contentChannel.RequiresApproval;
 
                     if ( contentChannel.ContentChannelType.IncludeTime )
                     {

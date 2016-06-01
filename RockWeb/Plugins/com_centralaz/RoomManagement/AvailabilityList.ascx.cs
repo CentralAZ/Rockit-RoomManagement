@@ -302,7 +302,8 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             List<Location> locationList = new List<Location>();
             if ( lipLocation.SelectedValueAsInt().HasValue )
             {
-                locationIdList = locationService.GetAllDescendentIds( lipLocation.SelectedValueAsInt().Value ).ToList();
+                locationIdList = locationService.GetAllDescendents( lipLocation.SelectedValueAsInt().Value ).Select( l => l.Id ).ToList();
+                locationIdList.Add( lipLocation.SelectedValueAsInt().Value );
                 locationList = locationService.Queryable().Where( l => locationIdList.Contains( l.Id ) ).ToList();
 
                 if ( locationIdList.Any() )

@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,7 +34,7 @@ using Rock.Utility;
 using System.Net;
 using System.IO.Compression;
 using Microsoft.Web.XmlTransform;
-
+using Rock.VersionInfo;
 
 namespace RockWeb.Blocks.Store
 {
@@ -163,8 +163,9 @@ namespace RockWeb.Blocks.Store
 
             if ( purchaseResponse.PackageInstallSteps != null )
             {
+                RockSemanticVersion rockVersion = RockSemanticVersion.Parse( VersionInfo.GetRockSemanticVersionNumber() );
 
-                foreach ( var installStep in purchaseResponse.PackageInstallSteps )
+                foreach ( var installStep in purchaseResponse.PackageInstallSteps.Where( s => s.RequiredRockSemanticVersion <= rockVersion ))
                 {
                     string appRoot = Server.MapPath( "~/" );
                     string rockShopWorkingDir = appRoot + "App_Data/RockShop";

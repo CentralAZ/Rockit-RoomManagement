@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -173,6 +173,7 @@ namespace RockWeb.Blocks.Groups
                     return;
                 }
 
+                groupType.ParentGroupTypes.Clear();
                 groupType.ChildGroupTypes.Clear();
 
                 groupTypeService.Delete( groupType );

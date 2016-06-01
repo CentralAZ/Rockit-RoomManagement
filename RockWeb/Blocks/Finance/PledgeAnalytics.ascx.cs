@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -242,6 +242,34 @@ namespace RockWeb.Blocks.Finance
             {
                 rblInclude.SetValue(Int32.Parse(includeSetting));
             }
+        }
+
+        /// <summary>
+        /// Formats the name.
+        /// </summary>
+        /// <param name="lastname">The lastname.</param>
+        /// <param name="nickname">The nickname.</param>
+        /// <returns></returns>
+        protected string FormatName( object lastname, object nickname )
+        {
+            string result = string.Empty;
+
+            if ( nickname != null )
+            {
+                result = nickname.ToString();
+            }
+
+            if ( lastname != null )
+            {
+                if ( !string.IsNullOrWhiteSpace( result ) )
+                {
+                    result += " ";
+                }
+
+                result += lastname;
+            }
+
+            return result;
         }
 
         #endregion

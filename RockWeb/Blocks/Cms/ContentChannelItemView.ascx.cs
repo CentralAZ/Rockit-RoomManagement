@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -73,8 +73,11 @@ namespace RockWeb.Blocks.Cms
             if ( SelectedChannelId.HasValue )
             {
                 var channel = new ContentChannelService( new RockContext() ).Get( SelectedChannelId.Value );
-                BindAttributes( channel );
-                AddDynamicControls( channel );
+                if ( channel != null )
+                {
+                    BindAttributes( channel );
+                    AddDynamicControls( channel );
+                }
             }
         }
 
@@ -363,11 +366,11 @@ namespace RockWeb.Blocks.Cms
                 }
             }
 
-            // Get the pending item counts for each channel
+            // Get the pending approval item counts for each channel (if the channel requires approval)
             itemService.Queryable()
                 .Where( i => 
                     channelCounts.Keys.Contains( i.ContentChannelId ) &&
-                    i.Status == ContentChannelItemStatus.PendingApproval )
+                    i.Status == ContentChannelItemStatus.PendingApproval && i.ContentChannel.RequiresApproval )
                 .GroupBy( i => i.ContentChannelId )
                 .Select( i => new {
                     Id = i.Key,

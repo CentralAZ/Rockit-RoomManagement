@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,8 +41,8 @@ namespace RockWeb.Blocks.Core
     [TextField( "Entity Type Qualifier Property", "", false )]
     [TextField( "Entity Type Qualifier Value", "", false )]
 
-    [CategoryField( "Root Category", "Select the root category to use as a starting point for the parent category picker.", false, Category = "CustomSetting" )]
-    [CategoryField( "Exclude Categories", "Select any category that you need to exclude from the parent category picker", true, Category = "CustomSetting" )]
+    [CategoryField( "Root Category", "Select the root category to use as a starting point for the parent category picker.", false, required:false, category: "CustomSetting" )]
+    [CategoryField( "Exclude Categories", "Select any category that you need to exclude from the parent category picker", true, required:false, category: "CustomSetting" )]
     public partial class CategoryDetail : RockBlockCustomSettings, IDetailBlock
     {
         #region Control Methods

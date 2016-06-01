@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -453,6 +453,11 @@ namespace RockWeb.Blocks.Crm.PersonDetail
                         contactInfoRow.HomePhoneNumber = PhoneNumber.FormattedNumber( homePhoneNumber.CountryCode, homePhoneNumber.Number );
                         contactInfoRow.HomePhoneCountryCode = homePhoneNumber.CountryCode;
                     }
+                    else
+                    {
+                        contactInfoRow.HomePhoneNumber = string.Empty;
+                        contactInfoRow.HomePhoneCountryCode = string.Empty;
+                    }
                 }
 
                 if ( _cellPhone != null )
@@ -462,6 +467,11 @@ namespace RockWeb.Blocks.Crm.PersonDetail
                     {
                         contactInfoRow.CellPhoneNumber = PhoneNumber.FormattedNumber( cellPhoneNumber.CountryCode, cellPhoneNumber.Number );
                         contactInfoRow.CellPhoneCountryCode = cellPhoneNumber.CountryCode;                     
+                    }
+                    else
+                    {
+                        contactInfoRow.CellPhoneNumber = string.Empty;
+                        contactInfoRow.CellPhoneCountryCode = string.Empty;
                     }
                 }
 

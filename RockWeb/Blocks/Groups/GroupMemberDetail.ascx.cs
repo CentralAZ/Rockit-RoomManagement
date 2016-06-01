@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -235,7 +235,6 @@ namespace RockWeb.Blocks.Groups
                 if ( group.IsSecurityRole || group.GroupType.Guid.Equals( Rock.SystemGuid.GroupType.GROUPTYPE_SECURITY_ROLE.AsGuid() ) )
                 {
                     Rock.Security.Role.Flush( group.Id );
-                    Rock.Security.Authorization.Flush();
                 }
             }
 

@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -119,7 +119,10 @@ namespace RockWeb.Blocks.Core
                             gReport.Columns.Add( deleteField );
                             deleteField.Click += gReport_Delete;
 
-                            BindGrid();
+                            if ( !Page.IsPostBack )
+                            {
+                                BindGrid();
+                            }
                         }
                     }
                 }

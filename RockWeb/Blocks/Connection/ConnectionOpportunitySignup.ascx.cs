@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -136,7 +136,7 @@ namespace RockWeb.Blocks.Connection
                     int? campusId = cpCampus.SelectedCampusId;
 
                     // if a person guid was passed in from the query string use that
-                    if (RockPage.PageParameter("PersonGuid") != null )
+                    if (RockPage.PageParameter("PersonGuid") != null && !string.IsNullOrWhiteSpace( RockPage.PageParameter( "PersonGuid" ) ) )
                     {
                         Guid? personGuid = RockPage.PageParameter( "PersonGuid" ).AsGuidOrNull();
 
@@ -146,7 +146,7 @@ namespace RockWeb.Blocks.Connection
                         }
                     } else if ( CurrentPerson != null &&
                         CurrentPerson.LastName.Equals( lastName, StringComparison.OrdinalIgnoreCase ) &&
-                        CurrentPerson.NickName.Equals( firstName, StringComparison.OrdinalIgnoreCase ) &&
+                        (CurrentPerson.NickName.Equals( firstName, StringComparison.OrdinalIgnoreCase ) || CurrentPerson.FirstName.Equals( firstName, StringComparison.OrdinalIgnoreCase )) &&
                         CurrentPerson.Email.Equals( email, StringComparison.OrdinalIgnoreCase ) )
                     {
                         // If the name and email entered are the same as current person (wasn't changed), use the current person
@@ -224,7 +224,7 @@ namespace RockWeb.Blocks.Connection
                         connectionRequest.ConnectionState = ConnectionState.Active;
                         connectionRequest.ConnectionStatusId = defaultStatusId;
                         connectionRequest.CampusId = campusId;
-                        connectionRequest.ConnectorPersonAliasId = opportunity.GetDefaultConnectorPersonAliasId( campusId.Value );
+                        connectionRequest.ConnectorPersonAliasId = opportunity.GetDefaultConnectorPersonAliasId( campusId );
                         if ( campusId.HasValue &&
                             opportunity != null &&
                             opportunity.ConnectionOpportunityCampuses != null )
@@ -287,7 +287,12 @@ namespace RockWeb.Blocks.Connection
                 var campuses = CampusCache.All();
                 cpCampus.Campuses = campuses;
                 cpCampus.Visible = campuses.Count > 1;
-                
+
+                if ( campuses.Any() )
+                {
+                    cpCampus.SetValue( campuses.First().Id );
+                }
+
                 var opportunity = new ConnectionOpportunityService( rockContext ).Get( opportunityId );
                 if ( opportunity == null )
                 {

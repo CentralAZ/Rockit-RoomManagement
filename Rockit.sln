@@ -1,13 +1,12 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "RockWeb-CentralChristianChurch", "http://localhost:52782", "{22348267-9BDF-4B5E-BB6E-37B5FA770224}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "RockWeb(2)", "http://localhost:52782", "{22348267-9BDF-4B5E-BB6E-37B5FA770224}"
 	ProjectSection(WebsiteProperties) = preProject
 		UseIISExpress = "true"
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5.1"
-		ProjectReferences = "{496ec024-71ed-4ad1-b677-2a3fa60ccd05}|com.centralaz.SampleProject.dll;"
+		ProjectReferences = "{e3c37e39-0dae-4826-b38f-eb6a4d23842f}|com.centralaz.RoomManagement.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_52782"
 		Debug.AspNetCompiler.PhysicalPath = "RockWeb\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_52782\"
@@ -25,7 +24,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "RockWeb-CentralChristianChu
 		SlnRelativePath = "RockWeb\"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "com.centralaz.SampleProject", "com.centralaz.SampleProject\com.centralaz.SampleProject.csproj", "{496EC024-71ED-4AD1-B677-2A3FA60CCD05}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "com.centralaz.RoomManagement", "com.centralaz.RoomManagement\com.centralaz.RoomManagement.csproj", "{E3C37E39-0DAE-4826-B38F-EB6A4D23842F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,10 +36,10 @@ Global
 		{22348267-9BDF-4B5E-BB6E-37B5FA770224}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22348267-9BDF-4B5E-BB6E-37B5FA770224}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{22348267-9BDF-4B5E-BB6E-37B5FA770224}.Release|Any CPU.Build.0 = Debug|Any CPU
-		{496EC024-71ED-4AD1-B677-2A3FA60CCD05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{496EC024-71ED-4AD1-B677-2A3FA60CCD05}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{496EC024-71ED-4AD1-B677-2A3FA60CCD05}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{496EC024-71ED-4AD1-B677-2A3FA60CCD05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3C37E39-0DAE-4826-B38F-EB6A4D23842F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3C37E39-0DAE-4826-B38F-EB6A4D23842F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3C37E39-0DAE-4826-B38F-EB6A4D23842F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3C37E39-0DAE-4826-B38F-EB6A4D23842F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

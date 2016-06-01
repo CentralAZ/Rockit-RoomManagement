@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -1067,7 +1067,10 @@ achieve our mission.  We are so grateful for your commitment.
 
                 if ( Gateway.UpdateScheduledPayment( scheduledTransaction, paymentInfo, out errorMessage ) )
                 {
-                    scheduledTransaction.FinancialPaymentDetail.SetFromPaymentInfo( paymentInfo, Gateway, rockContext );
+                    if ( hfPaymentTab.Value == "CreditCard" || hfPaymentTab.Value == "ACH" )
+                    {
+                        scheduledTransaction.FinancialPaymentDetail.SetFromPaymentInfo( paymentInfo, Gateway, rockContext );
+                    }
 
                     var selectedAccountIds = SelectedAccounts
                         .Where( a => a.Amount > 0 )

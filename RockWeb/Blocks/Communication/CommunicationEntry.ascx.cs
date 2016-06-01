@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -540,6 +540,12 @@ namespace RockWeb.Blocks.Communication
 
                 if ( communication != null )
                 {
+                    var mediumControl = GetMediumControl();
+                    if ( mediumControl != null )
+                    {
+                        mediumControl.OnCommunicationSave( rockContext );
+                    }
+
                     if ( _editingApproved && communication.Status == CommunicationStatus.PendingApproval )
                     {
                         rockContext.SaveChanges();
@@ -621,6 +627,12 @@ namespace RockWeb.Blocks.Communication
 
             if ( communication != null )
             {
+                var mediumControl = GetMediumControl();
+                if ( mediumControl != null )
+                {
+                    mediumControl.OnCommunicationSave( rockContext );
+                }
+
                 communication.Status = CommunicationStatus.Draft;
                 rockContext.SaveChanges();
 
@@ -942,33 +954,39 @@ namespace RockWeb.Blocks.Communication
             }
         }
 
+        private MediumControl GetMediumControl()
+        {
+            if ( phContent.Controls.Count == 1 )
+            {
+                return phContent.Controls[0] as MediumControl;
+            }
+            return null;
+        }
+
         /// <summary>
         /// Gets the medium data.
         /// </summary>
         private void GetMediumData()
         {
-            if ( phContent.Controls.Count == 1 )
+            var mediumControl = GetMediumControl();
+            if ( mediumControl != null )
             {
-                var mediumControl = phContent.Controls[0] as MediumControl;
-                if ( mediumControl != null )
+                // If using simple mode, the control should be re-initialized from sender since sender fields 
+                // are not presented for editing and user shouldn't be able to change them
+                if ( !_fullMode && CurrentPerson != null )
                 {
-                    // If using simple mode, the control should be re-initialized from sender since sender fields 
-                    // are not presented for editing and user shouldn't be able to change them
-                    if ( !_fullMode && CurrentPerson != null )
-                    {
-                        mediumControl.InitializeFromSender( CurrentPerson );
-                    }
+                    mediumControl.InitializeFromSender( CurrentPerson );
+                }
 
-                    foreach ( var dataItem in mediumControl.MediumData )
+                foreach ( var dataItem in mediumControl.MediumData )
+                {
+                    if ( MediumData.ContainsKey( dataItem.Key ) )
                     {
-                        if ( MediumData.ContainsKey( dataItem.Key ) )
-                        {
-                            MediumData[dataItem.Key] = dataItem.Value;
-                        }
-                        else
-                        {
-                            MediumData.Add( dataItem.Key, dataItem.Value );
-                        }
+                        MediumData[dataItem.Key] = dataItem.Value;
+                    }
+                    else
+                    {
+                        MediumData.Add( dataItem.Key, dataItem.Value );
                     }
                 }
             }
@@ -987,7 +1005,8 @@ namespace RockWeb.Blocks.Communication
 
                 foreach ( var dataItem in mediumData )
                 {
-                    if ( !string.IsNullOrWhiteSpace( dataItem.Value ) )
+                    // Also check Subject so that empty subject values not set in template are cleared. (Fixes #1393)
+                    if ( !string.IsNullOrWhiteSpace( dataItem.Value ) || dataItem.Key == "Subject" )
                     {
                         if ( MediumData.ContainsKey( dataItem.Key ) )
                         {

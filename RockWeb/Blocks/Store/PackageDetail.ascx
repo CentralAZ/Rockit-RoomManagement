@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="PackageDetail.ascx.cs" Inherits="RockWeb.Blocks.Store.PackageDetail" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="PackageDetail.ascx.cs" Inherits="RockWeb.Blocks.Store.PackageDetail" %>
 
 <asp:UpdatePanel ID="upnlContent" runat="server">
     <ContentTemplate>
@@ -56,6 +56,10 @@
                                     <strong>Documentation</strong><br />
                                     <asp:Literal ID="lDocumenationLink" runat="server" />
                                 </p>
+                                <p>
+                                    <strong>Support</strong><br />
+                                    <asp:Literal ID="lSupportLink" runat="server" />
+                                </p>
                             </div>
                             <div class="col-md-9">
 
@@ -94,15 +98,15 @@
                                 <div class="row">
                                     <asp:Repeater ID="rptLatestVersionRatings" runat="server">
                                         <ItemTemplate>
-                                            <div class="col-md-6 margin-b-lg">
+                                            <div class="col-md-12 margin-b-lg">
                                                     <div style="width: 65px; float: left;">
-                                                        <img src="http://www.rockrms.com/<%# Eval("PersonAlias.Person.PhotoUrl")%>&width=50" class="img-circle" />
+                                                        <img src='<%# PersonPhotoUrl( Eval( "PersonAlias.Person.PhotoUrl" ).ToString() ) %>&width=50' class="img-circle" />
                                                     </div>
                                                     <div style="width: 100%;">
                                                         <div class='rating rating-<%# Eval("Rating")%> pull-left margin-r-sm'></div>
                                                         <strong><%# Eval("PersonAlias.Person.FullName")%></strong>
                                                         <p class="margin-b-lg">
-                                                            <%# Eval("Review")%>
+                                                            <%# FormatReviewText(Eval("Review").ToString())%>
                                                         </p>
                                                     </div>
                                             </div>

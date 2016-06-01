@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,7 +39,7 @@ namespace RockWeb.Blocks.CheckIn
     [Category( "Check-in" )]
     [Description( "Shows a graph of attendance statistics which can be configured for specific groups, date range, etc." )]
     [DefinedValueField( Rock.SystemGuid.DefinedType.CHART_STYLES, "Chart Style", DefaultValue = Rock.SystemGuid.DefinedValue.CHART_STYLE_ROCK )]
-    [LinkedPage( "Detail Page", "Select the page to navigate to when the chart is clicked" )]
+    [LinkedPage( "Detail Page", "Select the page to navigate to when the chart is clicked", false )]
     [BooleanField( "Show Group Ancestry", "By default the group ancestry path is shown.  Unselect this to show only the group name.", true )]
     [GroupTypeField( "Attendance Type", required: false, key: "GroupTypeTemplate" )]
     [LinkedPage( "Check-in Detail Page", "Page that shows the user details for the check-in data.", false )]

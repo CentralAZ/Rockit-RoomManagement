@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -300,7 +300,11 @@ namespace RockWeb.Blocks.Communication
             // only communications for the selected recipient (_person)
             if ( _person != null )
             {
-                qryCommunications = qryCommunications.Where( c => c.Recipients.Any( a => a.PersonAlias.PersonId == _person.Id ) );
+                qryCommunications = qryCommunications
+                    .Where( c => 
+                        c.Recipients.Any( a => 
+                            a.PersonAlias.PersonId == _person.Id &&
+                            a.Status == CommunicationRecipientStatus.Delivered ) );
             }
 
             if ( drpDates.LowerValue.HasValue )

@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -1066,6 +1066,13 @@ namespace RockWeb.Blocks.Crm
 
                                                                                       var batchGroupMembers = groupMemberService.Queryable().Where(x => items.Contains(x.Id)).ToList();
 
+                                                                                      // also unregister them from any registration groups
+                                                                                      RegistrationRegistrantService registrantService = new RegistrationRegistrantService( context );
+                                                                                      foreach ( var registrant in registrantService.Queryable().Where( r => r.GroupMemberId.HasValue && items.Contains( r.GroupMemberId.Value ) ) )
+                                                                                      {
+                                                                                         registrant.GroupMemberId = null;
+                                                                                      }
+                                                                                      
                                                                                       groupMemberService.DeleteRange( batchGroupMembers );
                                                                                       
                                                                                       context.SaveChanges();
@@ -1375,7 +1382,7 @@ namespace RockWeb.Blocks.Crm
                         string labelText = string.Format( "<span class='js-select-item'><i class='fa {0}'></i></span> {1}", iconCss, attributeCache.Name );
                         Control control = attributeCache.AddControl( pw.Controls, string.Empty, string.Empty, setValues, true, false, labelText );
 
-                        if ( !( control is RockCheckBox ) )
+                        if ( !( control is RockCheckBox ) && !( control is PersonPicker ) )
                         {
                             var webControl = control as WebControl;
                             if ( webControl != null )

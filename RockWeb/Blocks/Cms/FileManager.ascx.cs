@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -79,7 +79,10 @@ namespace RockWeb.Blocks.Cms
             iframeUrl += "?rootFolder=" + HttpUtility.UrlEncode( Encryption.EncryptString( rootFolder ) );
             iframeUrl += "&browserMode=" + browseMode;
             iframeUrl += "&fileTypeBlackList=" + HttpUtility.UrlEncode( fileTypeBlackList );
-            iframeUrl += "&imageFileTypeWhiteList=" + HttpUtility.UrlEncode( imageFileTypeWhiteList );
+            if ( browseMode == "image" )
+            {
+                iframeUrl += "&imageFileTypeWhiteList=" + HttpUtility.UrlEncode( imageFileTypeWhiteList );
+            }
             iframeUrl += "&theme=" + this.RockPage.Site.Theme;
 
             iframeFileBrowser.Src = iframeUrl;

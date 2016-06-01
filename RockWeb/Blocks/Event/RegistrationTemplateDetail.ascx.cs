@@ -1,4 +1,4 @@
-// <copyright>
+﻿// <copyright>
 // Copyright 2013 by the Spark Development Network
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -534,6 +534,11 @@ namespace RockWeb.Blocks.Event
                             newFormField.Guid = Guid.NewGuid();
                             newFormFieldsState[newForm.Guid].Add( newFormField );
 
+                            if ( formField.FieldSource != RegistrationFieldSource.PersonField )
+                            {
+                                newFormField.Attribute = formField.Attribute;
+                            }
+
                             if ( formField.FieldSource == RegistrationFieldSource.RegistrationAttribute && formField.Attribute != null )
                             {
                                 var newAttribute = formField.Attribute.Clone( false );
@@ -726,6 +731,8 @@ namespace RockWeb.Blocks.Event
                 var registrationTemplateFormFieldService = new RegistrationTemplateFormFieldService( rockContext );
                 var registrationTemplateDiscountService = new RegistrationTemplateDiscountService( rockContext );
                 var registrationTemplateFeeService = new RegistrationTemplateFeeService( rockContext );
+                var registrationRegistrantFeeService = new RegistrationRegistrantFeeService( rockContext );
+
                 var groupService = new GroupService( rockContext );
 
                 // delete forms that aren't assigned in the UI anymore
@@ -763,11 +770,23 @@ namespace RockWeb.Blocks.Event
 
                 // delete fees that aren't assigned in the UI anymore
                 var feeUiGuids = FeeState.Select( u => u.Guid ).ToList();
-                foreach ( var fee in registrationTemplateFeeService
+                var deletedfees = registrationTemplateFeeService
                     .Queryable()
                     .Where( d =>
                         d.RegistrationTemplateId == RegistrationTemplate.Id &&
-                        !feeUiGuids.Contains( d.Guid ) ) )
+                        !feeUiGuids.Contains( d.Guid ) )
+                    .ToList();
+
+                var deletedFeeIds = deletedfees.Select( f => f.Id ).ToList();
+                foreach ( var registrantFee in registrationRegistrantFeeService
+                    .Queryable()
+                    .Where( f => deletedFeeIds.Contains( f.RegistrationTemplateFeeId ) )
+                    .ToList() )
+                {
+                    registrationRegistrantFeeService.Delete( registrantFee );
+                }
+
+                foreach ( var fee in deletedfees )
                 {
                     registrationTemplateFeeService.Delete( fee );
                 }
