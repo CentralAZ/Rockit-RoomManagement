@@ -30,6 +30,7 @@ namespace com.centralaz.RoomManagement.Web.UI.Controls
     /// <summary>
     /// 
     /// </summary>
+    [ToolboxData( "<{0}:ScheduledLocationItemPicker runat=server></{0}:ScheduledLocationItemPicker>" )]
     public class ScheduledLocationItemPicker : Rock.Web.UI.Controls.ItemPicker
     {
         /// <summary>
@@ -151,7 +152,7 @@ namespace com.centralaz.RoomManagement.Web.UI.Controls
         /// </value>
         public override string ItemRestUrl
         {
-            get { return "~/api/locations/getchildren/"; }
+            get { return "~/api/ScheduledLocations/GetChildren/"; }
         }
 
 

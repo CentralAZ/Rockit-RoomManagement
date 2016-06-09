@@ -30,23 +30,26 @@
                     <div class="col-md-6">
                         <div class="row">
                             <div class="col-md-6">
-                                <Rock:ScheduleBuilder ID="sbSchedule" runat="server" Label="Times" Required="true" />
+                                <Rock:ScheduleBuilder ID="sbSchedule" runat="server" Label="Times" Required="true" OnSaveSchedule="sbSchedule_SaveSchedule" />
+                                <CentralAZ:ScheduledLocationItemPicker ID="lpLocation" runat="server" Label="Locations" Required="false" AllowMultiSelect="true" OnSelectItem="lpLocation_SelectItem" />
                             </div>
                             <div class="col-md-6">
-                                <Rock:NumberBox ID="nbSetupTime" runat="server" NumberType="Integer" MinimumValue="0" Label="Setup Time" Required="false" />
-                                <Rock:NumberBox ID="nbCleanupTime" runat="server" NumberType="Integer" MinimumValue="0" Label="Cleanup Time" Required="false" />
+                                <Rock:NumberBox ID="nbSetupTime" runat="server" NumberType="Integer" MinimumValue="0" Label="Setup Time" Required="false" OnTextChanged="nbSetupTime_TextChanged" />
+                                <Rock:NumberBox ID="nbCleanupTime" runat="server" NumberType="Integer" MinimumValue="0" Label="Cleanup Time" Required="false" OnTextChanged="nbCleanupTime_TextChanged" />
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <Rock:LocationItemPicker ID="lpLocation" runat="server" Label="Locations" Required="false" AllowMultiSelect="true" OnSelectItem="lpLocation_SelectItem" />
+                        <Rock:PanelWidget ID="wpResources" runat="server" Title="Resources">
+                            <div class="grid">
+                                <Rock:Grid ID="gResources" runat="server" AllowPaging="false" DisplayType="Light" RowItemText="Resource" ShowConfirmDeleteDialog="false">
+                                    <Columns>
+                                        <Rock:RockBoundField DataField="Resource" HeaderText="Resource" />
+                                        <Rock:RockBoundField DataField="Quantity" HeaderText="Quantity" />
+                                        <Rock:EditField OnClick="gResources_Edit" />
+                                        <Rock:DeleteField OnClick="gResources_Delete" />
+                                    </Columns>
+                                </Rock:Grid>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <CentralAZ:ScheduledResourcePicker ID="srpResource" runat="server" Label="Resources" Required="false" AllowMultiSelect="true" OnSelectItem="rpResource_SelectItem" />
-                            </div>
-                        </div>
+                        </Rock:PanelWidget>
                     </div>
                 </div>
                 <div class="actions">
@@ -54,7 +57,20 @@
                     <asp:LinkButton ID="btnCancel" runat="server" Text="Cancel" CssClass="btn btn-link" OnClick="btnCancel_OnClick" />
                 </div>
             </div>
-
         </asp:Panel>
+        <Rock:ModalDialog ID="dlgReservationResource" runat="server" Title="Select Resource" OnSaveClick="dlgReservationResource_SaveClick" OnCancelScript="clearActiveDialog();" ValidationGroup="ReservationResource">
+            <Content>
+                <asp:HiddenField ID="hfAddReservationResourceGuid" runat="server" />
+                <asp:ValidationSummary ID="valReservationResourceSummary" runat="server" HeaderText="Please Correct the Following" CssClass="alert alert-danger" ValidationGroup="ReservationResource" />
+                <div class="row">
+                    <div class="col-md-6">
+                        <CentralAZ:ScheduledResourcePicker ID="srpResource" runat="server" Label="Resources" Required="false" AllowMultiSelect="true" OnSelectItem="srpResource_SelectItem" ValidationGroup="ReservationResource" />
+                    </div>
+                    <div class="col-md-6">
+                        <Rock:NumberBox ID="nbQuantity" runat="server" NumberType="Integer" MinimumValue="1" ValidationGroup="ReservationResource" Label="Quantity" />
+                    </div>
+                </div>
+            </Content>
+        </Rock:ModalDialog>
     </ContentTemplate>
 </asp:UpdatePanel>

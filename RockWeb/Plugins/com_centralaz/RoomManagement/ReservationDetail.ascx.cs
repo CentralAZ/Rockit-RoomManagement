@@ -15,6 +15,9 @@ using Rock.Model;
 using Rock.Web;
 using Rock.Web.Cache;
 using Rock.Web.UI;
+using Newtonsoft.Json;
+using Rock.Web.UI.Controls;
+
 namespace RockWeb.Plugins.com_centralaz.RoomManagement
 {
 
@@ -23,11 +26,38 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
     [Description( "Block for viewing a reservation detail" )]
     public partial class ReservationDetail : Rock.Web.UI.RockBlock
     {
-        #region Fields
+        #region Properties
+
+        /// <summary>
+        /// Gets or sets the state of the resources.
+        /// </summary>
+        /// <value>
+        /// The state of the resources.
+        /// </value>
+        private List<ReservationResource> ResourcesState { get; set; }
 
         #endregion
 
         #region Base Control Methods
+
+        /// <summary>
+        /// Restores the view-state information from a previous user control request that was saved by the <see cref="M:System.Web.UI.UserControl.SaveViewState" /> method.
+        /// </summary>
+        /// <param name="savedState">An <see cref="T:System.Object" /> that represents the user control state to be restored.</param>
+        protected override void LoadViewState( object savedState )
+        {
+            base.LoadViewState( savedState );
+
+            string json = ViewState["ResourcesState"] as string;
+            if ( string.IsNullOrWhiteSpace( json ) )
+            {
+                ResourcesState = new List<ReservationResource>();
+            }
+            else
+            {
+                ResourcesState = JsonConvert.DeserializeObject<List<ReservationResource>>( json );
+            }
+        }
 
         /// <summary>
         /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event.
@@ -36,6 +66,11 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
         protected override void OnInit( EventArgs e )
         {
             base.OnInit( e );
+
+            gResources.DataKeyNames = new string[] { "Guid" };
+            gResources.Actions.ShowAdd = true;
+            gResources.Actions.AddClick += gResources_Add;
+            gResources.GridRebind += gResources_GridRebind;
 
             // this event gets fired after block settings are updated. it's nice to repaint the screen if these settings would alter it
             this.AddConfigurationUpdateTrigger( upnlContent );
@@ -52,6 +87,25 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             {
                 ShowDetail();
             }
+        }
+
+        /// <summary>
+        /// Saves any user control view-state changes that have occurred since the last page postback.
+        /// </summary>
+        /// <returns>
+        /// Returns the user control's current view state. If there is no view state associated with the control, it returns null.
+        /// </returns>
+        protected override object SaveViewState()
+        {
+            var jsonSetting = new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                ContractResolver = new Rock.Utility.IgnoreUrlEncodedKeyContractResolver()
+            };
+
+            ViewState["ResourcesState"] = JsonConvert.SerializeObject( ResourcesState, Formatting.None, jsonSetting );
+
+            return base.SaveViewState();
         }
 
         /// <summary>
@@ -188,16 +242,220 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             ReturnToParentPage();
         }
 
+        /// <summary>
+        /// Handles the SelectItem event of the lpLocation control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         protected void lpLocation_SelectItem( object sender, EventArgs e )
         {
 
         }
 
+        /// <summary>
+        /// Handles the SaveSchedule event of the sbSchedule control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        protected void sbSchedule_SaveSchedule( object sender, EventArgs e )
+        {
+            LoadPickers();
+        }
+
+        /// <summary>
+        /// Handles the TextChanged event of the nbSetupTime control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        protected void nbSetupTime_TextChanged( object sender, EventArgs e )
+        {
+            LoadPickers();
+        }
+
+        /// <summary>
+        /// Handles the TextChanged event of the nbCleanupTime control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        protected void nbCleanupTime_TextChanged( object sender, EventArgs e )
+        {
+            LoadPickers();
+        }
+
+        #region ReservationResource Events
+
+        /// <summary>
+        /// Handles the SelectItem event of the srpResource control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        protected void srpResource_SelectItem( object sender, EventArgs e )
+        {
+            // On Item selected, set maximum value on the quantity number box and display it somewhere
+            var rockContext = new RockContext();
+            var resource = new ResourceService( rockContext ).Get( srpResource.SelectedValueAsId() ?? 0 );
+            if ( resource != null )
+            {
+                var newReservation = new Reservation() { Id = PageParameter( "ReservationId" ).AsIntegerOrNull() ?? 0, Schedule = new Schedule() { iCalendarContent = sbSchedule.iCalendarContent }, SetupTime = nbSetupTime.Text.AsInteger(), CleanupTime = nbCleanupTime.Text.AsInteger() };
+                var availableQuantity = new ReservationResourceService( new RockContext() ).GetAvailableResourceQuantity( resource, newReservation );
+                nbQuantity.MaximumValue = availableQuantity.ToString();
+                nbQuantity.Label = String.Format( "Quantity ({0} Available)", availableQuantity );
+            }
+
+        }
+
+        /// <summary>
+        /// Handles the SaveClick event of the dlgReservationResource control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        protected void dlgReservationResource_SaveClick( object sender, EventArgs e )
+        {
+            ReservationResource reservationResource = null;
+            Guid guid = hfAddReservationResourceGuid.Value.AsGuid();
+            if ( !guid.IsEmpty() )
+            {
+                reservationResource = ResourcesState.FirstOrDefault( l => l.Guid.Equals( guid ) );
+            }
+
+            if ( reservationResource == null )
+            {
+                reservationResource = new ReservationResource();
+            }
+
+            try
+            {
+                reservationResource.Resource = new ResourceService( new RockContext() ).Get( srpResource.SelectedValueAsId().Value );
+            }
+            catch { }
+
+            reservationResource.ResourceId = srpResource.SelectedValueAsId().Value;
+            reservationResource.Quantity = nbQuantity.Text.AsInteger();
+            reservationResource.ReservationId = 0;
+
+            if ( !reservationResource.IsValid )
+            {
+                return;
+            }
+
+            if ( ResourcesState.Any( a => a.Guid.Equals( reservationResource.Guid ) ) )
+            {
+                ResourcesState.RemoveEntity( reservationResource.Guid );
+            }
+
+            ResourcesState.Add( reservationResource );
+            BindReservationResourcesGrid();
+            dlgReservationResource.Hide();
+            LoadPickers();
+        }
+
+        /// <summary>
+        /// Handles the Delete event of the gResources control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RowEventArgs"/> instance containing the event data.</param>
+        protected void gResources_Delete( object sender, RowEventArgs e )
+        {
+            Guid rowGuid = (Guid)e.RowKeyValue;
+            ResourcesState.RemoveEntity( rowGuid );
+
+            BindReservationResourcesGrid();
+        }
+
+        /// <summary>
+        /// Handles the GridRebind event of the gResources control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void gResources_GridRebind( object sender, EventArgs e )
+        {
+            BindReservationResourcesGrid();
+        }
+
+        /// <summary>
+        /// Handles the Edit event of the gResources control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RowEventArgs"/> instance containing the event data.</param>
+        protected void gResources_Edit( object sender, RowEventArgs e )
+        {
+            Guid reservationResourceGuid = (Guid)e.RowKeyValue;
+            gResources_ShowEdit( reservationResourceGuid );
+        }
+
+        /// <summary>
+        /// gs the resources_ show edit.
+        /// </summary>
+        /// <param name="reservationResourceGuid">The reservation resource unique identifier.</param>
+        protected void gResources_ShowEdit( Guid reservationResourceGuid )
+        {
+            ReservationResource reservationResource = ResourcesState.FirstOrDefault( l => l.Guid.Equals( reservationResourceGuid ) );
+            if ( reservationResource != null )
+            {
+                nbQuantity.Text = reservationResource.Quantity.ToString();
+                srpResource.SetValue( reservationResource.ResourceId );
+
+            }
+            else
+            {
+                nbQuantity.Text = String.Empty;
+                srpResource.SetValue( null );
+            }
+
+            hfAddReservationResourceGuid.Value = reservationResourceGuid.ToString();
+            dlgReservationResource.Show();
+        }
+
+        /// <summary>
+        /// Handles the Add event of the gResources control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void gResources_Add( object sender, EventArgs e )
+        {
+            gResources_ShowEdit( Guid.Empty );
+        }
+
+        /// <summary>
+        /// Binds the reservation resources grid.
+        /// </summary>
+        private void BindReservationResourcesGrid()
+        {
+            SetReservationResourceListOrder( ResourcesState );
+            gResources.DataSource = ResourcesState.Select( c => new
+            {
+                c.Id,
+                c.Guid,
+                Resource = c.Resource.Name,
+                Quantity = c.Quantity
+            } ).ToList();
+            gResources.DataBind();
+        }
+
+        /// <summary>
+        /// Sets the reservation resource list order.
+        /// </summary>
+        /// <param name="reservationResourceList">The reservation resource list.</param>
+        private void SetReservationResourceListOrder( List<ReservationResource> reservationResourceList )
+        {
+            if ( reservationResourceList != null )
+            {
+                if ( reservationResourceList.Any() )
+                {
+                    reservationResourceList.OrderBy( c => c.Resource.Name ).ToList();
+                }
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region Methods
 
-
+        /// <summary>
+        /// Shows the detail.
+        /// </summary>
         private void ShowDetail()
         {
             RockContext rockContext = new RockContext();
@@ -259,6 +517,9 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             nbSetupTime.Text = reservation.SetupTime.ToString();
             nbCleanupTime.Text = reservation.CleanupTime.ToString();
 
+            ResourcesState = reservation.ReservationResources.ToList();
+            BindReservationResourcesGrid();
+
             ddlCampus.Items.Clear();
             ddlCampus.Items.Add( new ListItem( string.Empty, string.Empty ) );
 
@@ -270,6 +531,8 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
 
             ddlMinistry.BindToDefinedType( DefinedTypeCache.Read( com.centralaz.RoomManagement.SystemGuid.DefinedType.MINISTRY.AsGuid() ), true );
             ddlMinistry.SetValue( reservation.MinistryId );
+            LoadPickers();
+
 
         }
 
@@ -283,10 +546,16 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             NavigateToParentPage( dictionaryInfo );
         }
 
-        #endregion
-        protected void rpResource_SelectItem( object sender, EventArgs e )
+        /// <summary>
+        /// Loads the pickers.
+        /// </summary>
+        private void LoadPickers()
         {
-
+            int reservationId = PageParameter( "ReservationId" ).AsInteger();
+            // srpResource.ItemRestUrlExtraParams += String.Format( "?reservationId={0}&iCalendarContent={1}&setupTime={2}&cleanupTime={3}", reservationId, sbSchedule.iCalendarContent, nbSetupTime.Text.AsInteger(), nbCleanupTime.Text.AsInteger() );
+            //lpLocation.ItemRestUrlExtraParams += String.Format( "?reservationId={0}&iCalendarContent={1}&setupTime={2}&cleanupTime={3}", reservationId, sbSchedule.iCalendarContent, nbSetupTime.Text.AsInteger(), nbCleanupTime.Text.AsInteger() );
         }
+
+        #endregion        
     }
 }

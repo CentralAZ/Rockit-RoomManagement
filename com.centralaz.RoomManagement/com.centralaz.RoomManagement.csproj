@@ -69,7 +69,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\ScheduledCategoriesController.Partial.cs" />
+    <Compile Include="Controllers\ScheduledLocationsController.Partial.cs" />
+    <Compile Include="Controllers\ScheduledResourcesController.Partial.cs" />
     <Compile Include="Migrations\001_CreateDb.cs" />
     <Compile Include="Model\ReservationLocation.cs" />
     <Compile Include="Model\ReservationResource.cs" />

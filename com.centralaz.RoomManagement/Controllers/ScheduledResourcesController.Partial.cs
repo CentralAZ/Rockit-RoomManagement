@@ -30,15 +30,15 @@ using Rock.Web.Cache;
 
 namespace Rock.Rest.Controllers
 {
-    public partial class ScheduledCategoriesController : Rock.Rest.ApiController<Rock.Model.Category>
+    public partial class ScheduledResourcesController : Rock.Rest.ApiController<Rock.Model.Category>
     {
-        public ScheduledCategoriesController() : base( new Rock.Model.CategoryService( new Rock.Data.RockContext() ) ) { }
+        public ScheduledResourcesController() : base( new Rock.Model.CategoryService( new Rock.Data.RockContext() ) ) { }
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public partial class ScheduledCategoriesController
+    public partial class ScheduledResourcesController
     {
         /// <summary>
         /// Gets the children.
@@ -60,6 +60,10 @@ namespace Rock.Rest.Controllers
             int id,
             int rootCategoryId = 0,
             bool getCategorizedItems = false,
+            int? reservationId = null,
+            string iCalendarContent = "",
+            int? setupTime = null,
+            int? cleanupTime = null,
             string entityQualifier = null,
             string entityQualifierValue = null,
             bool showUnnamedEntityItems = true,
@@ -72,6 +76,7 @@ namespace Rock.Rest.Controllers
 
             var includedCategoryIdList = includedCategoryIds.SplitDelimitedValues().AsIntegerList().Except( new List<int> { 0 } ).ToList();
             var excludedCategoryIdList = excludedCategoryIds.SplitDelimitedValues().AsIntegerList().Except( new List<int> { 0 } ).ToList();
+            int entityTypeId = EntityTypeCache.Read( com.centralaz.RoomManagement.SystemGuid.EntityType.RESOURCE.AsGuid() ).Id;
             defaultIconCssClass = defaultIconCssClass ?? "fa fa-list-ol";
 
             IQueryable<Category> qry = Get();
@@ -104,38 +109,9 @@ namespace Rock.Rest.Controllers
                 qry = qry.Where( a => !excludedCategoryIdList.Contains( a.Id ) );
             }
 
-            IService serviceInstance = null;
+            qry = qry.Where( c => c.EntityTypeId == entityTypeId );
 
-            var cachedEntityType = EntityTypeCache.Read( com.centralaz.RoomManagement.SystemGuid.EntityType.RESOURCE.AsGuid() );
-            if ( cachedEntityType != null )
-            {
-                qry = qry.Where( a => a.EntityTypeId == cachedEntityType.Id );
-                if ( !string.IsNullOrWhiteSpace( entityQualifier ) )
-                {
-                    qry = qry.Where( a => string.Compare( a.EntityTypeQualifierColumn, entityQualifier, true ) == 0 );
-                    if ( !string.IsNullOrWhiteSpace( entityQualifierValue ) )
-                    {
-                        qry = qry.Where( a => string.Compare( a.EntityTypeQualifierValue, entityQualifierValue, true ) == 0 );
-                    }
-                    else
-                    {
-                        qry = qry.Where( a => a.EntityTypeQualifierValue == null || a.EntityTypeQualifierValue == string.Empty );
-                    }
-                }
-
-                // Get the GetByCategory method
-                if ( cachedEntityType.AssemblyName != null )
-                {
-                    Type entityType = cachedEntityType.GetEntityType();
-                    if ( entityType != null )
-                    {
-                        Type[] modelType = { entityType };
-                        Type genericServiceType = typeof( Rock.Data.Service<> );
-                        Type modelServiceType = genericServiceType.MakeGenericType( modelType );
-                        serviceInstance = Activator.CreateInstance( modelServiceType, new object[] { new RockContext() } ) as IService;
-                    }
-                }
-            }
+            ResourceService resourceService = new ResourceService( new RockContext() );
 
             List<Category> categoryList = qry.OrderBy( c => c.Order ).ThenBy( c => c.Name ).ToList();
             List<ScheduledCategoryItem> categoryItemList = new List<ScheduledCategoryItem>();
@@ -155,29 +131,32 @@ namespace Rock.Rest.Controllers
 
             if ( getCategorizedItems )
             {
+                var rockContext = new RockContext();
+                var reservationResourceService = new ReservationResourceService( rockContext );
                 // if id is zero and we have a rootCategory, show the children of that rootCategory (but don't show the rootCategory)
                 int parentItemId = id == 0 ? rootCategoryId : id;
 
-                var reservationService = new ReservationService( new RockContext() );
-                var reservationList = reservationService.Queryable();//.Where( r => r.IsActive );
-                var reservationResourceList = reservationService.GetReservationSummaries( reservationList, DateTime.Now, DateTime.Now.AddDays( 3 ) ).SelectMany( r => r.ReservationResources );
-                var itemsQry = GetCategorizedItems( reservationService, parentItemId, showUnnamedEntityItems );
-                if ( reservationResourceList.Where( rr => rr.Resource.CategoryId == parentItemId ) != null )
+                var newReservation = new Reservation() { Id = reservationId ?? 0, Schedule = new Schedule() { iCalendarContent = iCalendarContent }, SetupTime = setupTime, CleanupTime = cleanupTime };
+
+                var resourceQry = GetCategorizedItems( resourceService, parentItemId, showUnnamedEntityItems );
+                if ( resourceQry.Where( r => r.CategoryId == parentItemId ) != null )
                 {
                     // do a ToList to load from database prior to ordering by name, just in case Name is a virtual property
-                    var itemsList = reservationResourceList.Where( rr => rr.Resource.CategoryId == parentItemId ).Select( rr => rr.Resource ).ToList();
+                    var itemsList = resourceQry.Where( r => r.CategoryId == parentItemId ).ToList();
 
                     foreach ( var categorizedItem in itemsList.OrderBy( i => i.Name ) )
                     {
                         if ( categorizedItem != null && categorizedItem.IsAuthorized( Authorization.VIEW, currentPerson ) )
                         {
+                            var availableQuantity = reservationResourceService.GetAvailableResourceQuantity( categorizedItem, newReservation );
+
                             var scheduledCategoryItem = new ScheduledCategoryItem();
                             scheduledCategoryItem.Id = categorizedItem.Id.ToString();
-                            scheduledCategoryItem.Name = categorizedItem.Name;
+                            scheduledCategoryItem.Name = String.Format( "{0} ({1})", categorizedItem.Name, availableQuantity );
                             scheduledCategoryItem.IsCategory = false;
                             scheduledCategoryItem.IconCssClass = categorizedItem.GetPropertyValue( "IconCssClass" ) as string ?? defaultIconCssClass;
                             scheduledCategoryItem.IconSmallUrl = string.Empty;
-                            scheduledCategoryItem.IsActive = true;// group.IsActive;
+                            scheduledCategoryItem.IsActive = availableQuantity > 0;
                             categoryItemList.Add( scheduledCategoryItem );
                         }
                     }
@@ -204,7 +183,7 @@ namespace Rock.Rest.Controllers
                     {
                         if ( getCategorizedItems )
                         {
-                            var childItems = GetCategorizedItems( serviceInstance, parentId, showUnnamedEntityItems );
+                            var childItems = GetCategorizedItems( resourceService, parentId, showUnnamedEntityItems );
                             if ( childItems != null )
                             {
                                 foreach ( var categorizedItem in childItems )
@@ -236,7 +215,7 @@ namespace Rock.Rest.Controllers
         /// <param name="categoryId">The category id.</param>
         /// <param name="showUnnamedEntityItems">if set to <c>true</c> [show unnamed entity items].</param>
         /// <returns></returns>
-        private IQueryable<ICategorized> GetCategorizedItems( IService serviceInstance, int categoryId, bool showUnnamedEntityItems )
+        private IQueryable<Resource> GetCategorizedItems( IService serviceInstance, int categoryId, bool showUnnamedEntityItems )
         {
             if ( serviceInstance != null )
             {
@@ -259,7 +238,7 @@ namespace Rock.Rest.Controllers
                         compareExpression = Expression.Equal( propertyExpression, constantExpression );
                     }
 
-                    var result = getMethod.Invoke( serviceInstance, new object[] { paramExpression, compareExpression } ) as IQueryable<ICategorized>;
+                    var result = getMethod.Invoke( serviceInstance, new object[] { paramExpression, compareExpression } ) as IQueryable<Resource>;
 
                     if ( !showUnnamedEntityItems )
                     {
