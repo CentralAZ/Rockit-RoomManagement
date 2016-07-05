@@ -41,7 +41,7 @@ namespace com.centralaz.RoomManagement.Model
                      ( currentReservationSummary.ReservationStartDateTime > newReservationSummary.ReservationStartDateTime || currentReservationSummary.ReservationEndDateTime > newReservationSummary.ReservationStartDateTime ) &&
                      ( currentReservationSummary.ReservationStartDateTime < newReservationSummary.ReservationEndDateTime || currentReservationSummary.ReservationEndDateTime < newReservationSummary.ReservationEndDateTime )
                     ).Sum( currentReservationSummary => currentReservationSummary.ReservationResources.Where( rr => rr.ResourceId == resource.Id ).Sum( rr => rr.Quantity ) )
-               ) ;
+               );
 
             var maxReservedQuantity = reservedQuantities.Count() > 0 ? reservedQuantities.Max() : 0;
             return resource.Quantity - maxReservedQuantity;

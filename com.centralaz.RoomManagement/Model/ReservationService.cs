@@ -74,6 +74,19 @@ namespace com.centralaz.RoomManagement.Model
             return reservationSummaryList;
         }
 
+        public List<int> GetReservedLocationIds( Reservation newReservation )
+        {
+            var newReservationSummaries = GetReservationSummaries( new List<Reservation>() { newReservation }.AsQueryable(), DateTime.Now, DateTime.Now.AddDays( 3 ) );
+            var reservedLocationIds = GetReservationSummaries( Queryable().Where( r => r.Id != newReservation.Id ), DateTime.Now, DateTime.Now.AddDays( 3 ) )
+                .Where( currentReservationSummary => newReservationSummaries.Any( newReservationSummary =>
+                 ( currentReservationSummary.ReservationStartDateTime > newReservationSummary.ReservationStartDateTime || currentReservationSummary.ReservationEndDateTime > newReservationSummary.ReservationStartDateTime ) &&
+                 ( currentReservationSummary.ReservationStartDateTime < newReservationSummary.ReservationEndDateTime || currentReservationSummary.ReservationEndDateTime < newReservationSummary.ReservationEndDateTime )
+                 ) ).SelectMany( currentReservationSummary => currentReservationSummary.ReservationLocations.Select( rl => rl.LocationId ) )
+                 .Distinct()
+                 .ToList();
+            return reservedLocationIds;
+        }
+
         private string GetFriendlyScheduleDescription( DateTime startDateTime, DateTime endDateTime, bool showDate = true )
         {
             if ( startDateTime.Date == endDateTime.Date )

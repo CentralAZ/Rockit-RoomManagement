@@ -138,7 +138,7 @@ namespace Rock.Rest.Controllers
 
                 var newReservation = new Reservation() { Id = reservationId ?? 0, Schedule = new Schedule() { iCalendarContent = iCalendarContent }, SetupTime = setupTime, CleanupTime = cleanupTime };
 
-                var resourceQry = GetCategorizedItems( resourceService, parentItemId, showUnnamedEntityItems );
+                var resourceQry = resourceService.Queryable();
                 if ( resourceQry.Where( r => r.CategoryId == parentItemId ) != null )
                 {
                     // do a ToList to load from database prior to ordering by name, just in case Name is a virtual property

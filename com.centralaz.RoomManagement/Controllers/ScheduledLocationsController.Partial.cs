@@ -90,17 +90,10 @@ namespace Rock.Rest.Controllers
 
             var person = GetPerson();
 
-            var newReservation = new Reservation() { Id = reservationId ?? 0 , Schedule = new Schedule() { iCalendarContent = iCalendarContent } , SetupTime = setupTime, CleanupTime = cleanupTime};
+            var newReservation = new Reservation() { Id = reservationId ?? 0, Schedule = new Schedule() { iCalendarContent = iCalendarContent }, SetupTime = setupTime, CleanupTime = cleanupTime };
 
             var reservationService = new ReservationService( rockContext );
-            var newReservationSummaries = reservationService.GetReservationSummaries( new List<Reservation>() { newReservation }.AsQueryable(), DateTime.Now, DateTime.Now.AddDays( 3 ) );
-            var reservedLocationIds = reservationService.GetReservationSummaries( reservationService.Queryable(), DateTime.Now, DateTime.Now.AddDays( 3 ) )
-                .Where( currentReservationSummary => newReservationSummaries.Any( newReservationSummary =>
-                 ( currentReservationSummary.ReservationStartDateTime > newReservationSummary.ReservationStartDateTime || currentReservationSummary.ReservationEndDateTime > newReservationSummary.ReservationStartDateTime ) &&
-                 ( currentReservationSummary.ReservationStartDateTime < newReservationSummary.ReservationEndDateTime || currentReservationSummary.ReservationEndDateTime < newReservationSummary.ReservationEndDateTime )
-                 ) ).SelectMany( currentReservationSummary => currentReservationSummary.ReservationLocations.Select( rl => rl.LocationId ) )
-                 .Distinct()
-                 .ToList();
+            List<int> reservedLocationIds = reservationService.GetReservedLocationIds( newReservation );
 
             foreach ( var location in qry.OrderBy( l => l.Name ) )
             {
@@ -136,5 +129,6 @@ namespace Rock.Rest.Controllers
 
             return locationNameList.AsQueryable();
         }
+
     }
 }

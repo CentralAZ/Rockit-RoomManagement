@@ -125,11 +125,13 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
                 Reservation reservation = new ReservationService( new RockContext() ).Get( reservationId.Value );
                 if ( reservation != null )
                 {
-                    breadCrumbs.Add( new BreadCrumb( "Edit Reservation", pageReference ) );
+                    breadCrumbs.Add( new BreadCrumb( reservation.Name, pageReference ) );
+                    lPanelTitle.Text = reservation.Name;
                 }
                 else
                 {
                     breadCrumbs.Add( new BreadCrumb( "New Reservation", pageReference ) );
+                    lPanelTitle.Text = "New Reservation";
                 }
             }
             else
@@ -154,6 +156,7 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             RockContext rockContext = new RockContext();
             ReservationService roomReservationService = new ReservationService( rockContext );
             PersonAliasService personAliasService = new PersonAliasService( rockContext );
+            ReservationResourceService reservationResourceService = new ReservationResourceService( rockContext );
             Reservation reservation = null;
 
             if ( PageParameter( "ReservationId" ).AsIntegerOrNull() != null )
@@ -165,9 +168,18 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             {
                 reservation = new Reservation { Id = 0 };
             }
+            else
+            {
+                var uiResources = ResourcesState.Select( l => l.Guid );
+                foreach ( var reservationResource in reservation.ReservationResources.Where( l => !uiResources.Contains( l.Guid ) ).ToList() )
+                {
+                    reservation.ReservationResources.Remove( reservationResource );
+                    reservationResourceService.Delete( reservationResource );
+                }
+            }
 
             var locationIds = lpLocation.SelectedValuesAsInt();
-            foreach ( var locationId in locationIds )
+            foreach ( var locationId in locationIds.Where( l => l != 0 ) )
             {
                 ReservationLocation reservationLocation = reservation.ReservationLocations.Where( l => l.LocationId == locationId ).FirstOrDefault();
                 if ( reservationLocation == null )
@@ -179,17 +191,25 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
                 }
             }
 
-            var resourceIds = srpResource.SelectedValuesAsInt();
-            foreach ( var resourceId in resourceIds )
+            Hydrate( ResourcesState, rockContext );
+            foreach ( var reservationResourceState in ResourcesState )
             {
-                ReservationResource reservationResource = reservation.ReservationResources.Where( r => r.ResourceId == resourceId ).FirstOrDefault();
+                ReservationResource reservationResource = reservation.ReservationResources.Where( a => a.Guid == reservationResourceState.Guid ).FirstOrDefault();
                 if ( reservationResource == null )
                 {
                     reservationResource = new ReservationResource();
-                    reservationResource.ResourceId = resourceId;
-                    reservationResource.ReservationId = reservation.Id;
                     reservation.ReservationResources.Add( reservationResource );
                 }
+                else
+                {
+                    reservationResourceState.Id = reservationResource.Id;
+                    reservationResourceState.Guid = reservationResource.Guid;
+                }
+
+                reservationResource.CopyPropertiesFrom( reservationResourceState );
+                reservationResource.Resource = reservationResourceState.Resource;
+                reservationResource.Reservation = reservationResourceState.Reservation;
+                reservationResource.ReservationId = reservation.Id;
             }
 
             if ( sbSchedule.iCalendarContent != null )
@@ -200,7 +220,7 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
 
             reservation.RequestorAliasId = CurrentPersonAliasId;
 
-            if ( !reservation.IsApproved && cbIsApproved.Checked )
+            if ( !reservation.IsApproved && tglIsApproved.Checked )
             {
                 reservation.ApproverAliasId = CurrentPersonAliasId;
             }
@@ -215,12 +235,41 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
                 reservation.MinistryId = ddlMinistry.SelectedValueAsId().Value;
             }
 
-            reservation.IsApproved = cbIsApproved.Checked;
+            reservation.IsApproved = tglIsApproved.Checked;
             reservation.Note = rtbNote.Text;
             reservation.Name = rtbName.Text;
             reservation.NumberAttending = nbAttending.Text.AsInteger();
             reservation.SetupTime = nbSetupTime.Text.AsInteger();
             reservation.CleanupTime = nbCleanupTime.Text.AsInteger();
+
+            //Check to make sure that nothing has a scheduling conflict.
+            bool hasConflict = false;
+            StringBuilder sb = new StringBuilder();
+            sb.Append( "<b>The Following items are already reserved for the scheduled times:<br><ul>" );
+            var reservedLocationIds = roomReservationService.GetReservedLocationIds( reservation );
+            foreach ( var location in reservation.ReservationLocations.Where( l => reservedLocationIds.Contains( l.LocationId ) ) )
+            {
+                sb.AppendFormat( "<li>{0}</li>", location.Location.Name );
+                hasConflict = true;
+            }
+
+            foreach ( var resource in reservation.ReservationResources )
+            {
+                var availableQuantity = new ReservationResourceService( rockContext ).GetAvailableResourceQuantity( resource.Resource, reservation );
+                if ( availableQuantity - resource.Quantity < 0 )
+                {
+                    sb.AppendFormat( "<li>{0}</li>", resource.Resource.Name );
+                    hasConflict = true;
+                }
+            }
+
+            if ( hasConflict )
+            {
+                sb.Append( "</ul>" );
+                nbErrorWarning.Text = sb.ToString();
+                nbErrorWarning.Visible = true;
+                return;
+            }
 
             if ( reservation.Id.Equals( 0 ) )
             {
@@ -346,7 +395,6 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             ResourcesState.Add( reservationResource );
             BindReservationResourcesGrid();
             dlgReservationResource.Hide();
-            LoadPickers();
         }
 
         /// <summary>
@@ -421,7 +469,8 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
         /// </summary>
         private void BindReservationResourcesGrid()
         {
-            SetReservationResourceListOrder( ResourcesState );
+            Hydrate( ResourcesState, new RockContext() );
+
             gResources.DataSource = ResourcesState.Select( c => new
             {
                 c.Id,
@@ -430,21 +479,6 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
                 Quantity = c.Quantity
             } ).ToList();
             gResources.DataBind();
-        }
-
-        /// <summary>
-        /// Sets the reservation resource list order.
-        /// </summary>
-        /// <param name="reservationResourceList">The reservation resource list.</param>
-        private void SetReservationResourceListOrder( List<ReservationResource> reservationResourceList )
-        {
-            if ( reservationResourceList != null )
-            {
-                if ( reservationResourceList.Any() )
-                {
-                    reservationResourceList.OrderBy( c => c.Resource.Name ).ToList();
-                }
-            }
         }
 
         #endregion
@@ -511,7 +545,7 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             }
 
             rtbName.Text = reservation.Name;
-            cbIsApproved.Checked = reservation.IsApproved;
+            tglIsApproved.Checked = reservation.IsApproved;
             rtbNote.Text = reservation.Note;
             nbAttending.Text = reservation.NumberAttending.ToString();
             nbSetupTime.Text = reservation.SetupTime.ToString();
@@ -552,8 +586,20 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
         private void LoadPickers()
         {
             int reservationId = PageParameter( "ReservationId" ).AsInteger();
-            // srpResource.ItemRestUrlExtraParams += String.Format( "?reservationId={0}&iCalendarContent={1}&setupTime={2}&cleanupTime={3}", reservationId, sbSchedule.iCalendarContent, nbSetupTime.Text.AsInteger(), nbCleanupTime.Text.AsInteger() );
-            //lpLocation.ItemRestUrlExtraParams += String.Format( "?reservationId={0}&iCalendarContent={1}&setupTime={2}&cleanupTime={3}", reservationId, sbSchedule.iCalendarContent, nbSetupTime.Text.AsInteger(), nbCleanupTime.Text.AsInteger() );
+            string encodedCalendarContent = Uri.EscapeUriString( sbSchedule.iCalendarContent );
+            srpResource.ItemRestUrlExtraParams += String.Format( "&reservationId={0}&iCalendarContent={1}&setupTime={2}&cleanupTime={3}", reservationId, encodedCalendarContent, nbSetupTime.Text.AsInteger(), nbCleanupTime.Text.AsInteger() );
+           // lpLocation.ItemRestUrlExtraParams = String.Format( "?reservationId={0}&iCalendarContent={1}&setupTime={2}&cleanupTime={3}", reservationId, encodedCalendarContent, nbSetupTime.Text.AsInteger(), nbCleanupTime.Text.AsInteger() );
+        }
+
+        private void Hydrate( List<ReservationResource> resourcesState, RockContext rockContext )
+        {
+            var resourceService = new ResourceService( rockContext );
+            var reservationService = new ReservationService( rockContext );
+            foreach ( var reservationResource in resourcesState )
+            {
+                reservationResource.Reservation = reservationService.Get( reservationResource.ReservationId );
+                reservationResource.Resource = resourceService.Get( reservationResource.ResourceId );
+            }
         }
 
         #endregion        

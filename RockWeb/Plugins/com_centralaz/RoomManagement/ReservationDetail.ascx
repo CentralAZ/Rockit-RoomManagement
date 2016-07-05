@@ -3,15 +3,17 @@
 
 <asp:UpdatePanel ID="upnlContent" runat="server">
     <ContentTemplate>
-
+        <Rock:NotificationBox ID="nbErrorWarning" runat="server" NotificationBoxType="Danger" />
         <asp:Panel ID="pnlView" runat="server" CssClass="panel panel-block">
 
             <div class="panel-heading">
                 <h1 class="panel-title">
                     <asp:Literal ID="lPanelTitle" runat="server" /></h1>
+                <div class="pull-right">
+                    <Rock:Toggle ID="tglIsApproved" runat="server" OffText="Unapproved" OnText="Approved" OnCssClass="btn-success" OffCssClass="btn-warning" ButtonSizeCssClass="btn-xs" />
+                </div>
             </div>
             <div class="panel-body">
-                <Rock:NotificationBox ID="nbErrorWarning" runat="server" NotificationBoxType="Danger" />
                 <div class="row">
                     <div class="col-md-6">
                         <Rock:RockTextBox ID="rtbName" runat="server" Label="Event Name" Required="true" />
@@ -22,9 +24,6 @@
                             <div class="col-md-6">
                                 <Rock:NumberBox ID="nbAttending" runat="server" NumberType="Integer" MinimumValue="0" Label="Number Attending" Required="false" />
                             </div>
-                            <div class="col-md-6">
-                                <Rock:RockCheckBox ID="cbIsApproved" runat="server" Label="Approved" />
-                            </div>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -34,8 +33,8 @@
                                 <CentralAZ:ScheduledLocationItemPicker ID="lpLocation" runat="server" Label="Locations" Required="false" AllowMultiSelect="true" OnSelectItem="lpLocation_SelectItem" />
                             </div>
                             <div class="col-md-6">
-                                <Rock:NumberBox ID="nbSetupTime" runat="server" NumberType="Integer" MinimumValue="0" Label="Setup Time" Required="false" OnTextChanged="nbSetupTime_TextChanged" />
-                                <Rock:NumberBox ID="nbCleanupTime" runat="server" NumberType="Integer" MinimumValue="0" Label="Cleanup Time" Required="false" OnTextChanged="nbCleanupTime_TextChanged" />
+                                <Rock:NumberBox ID="nbSetupTime" runat="server" NumberType="Integer" MinimumValue="0" Label="Setup Time" Required="false" OnTextChanged="nbSetupTime_TextChanged" Help="The number of minutes it will take to set up the event." />
+                                <Rock:NumberBox ID="nbCleanupTime" runat="server" NumberType="Integer" MinimumValue="0" Label="Cleanup Time" Required="false" OnTextChanged="nbCleanupTime_TextChanged" Help="The number of minutes it will take to clean up the event." />
                             </div>
                         </div>
                         <Rock:PanelWidget ID="wpResources" runat="server" Title="Resources">
@@ -64,7 +63,7 @@
                 <asp:ValidationSummary ID="valReservationResourceSummary" runat="server" HeaderText="Please Correct the Following" CssClass="alert alert-danger" ValidationGroup="ReservationResource" />
                 <div class="row">
                     <div class="col-md-6">
-                        <CentralAZ:ScheduledResourcePicker ID="srpResource" runat="server" Label="Resources" Required="false" AllowMultiSelect="true" OnSelectItem="srpResource_SelectItem" ValidationGroup="ReservationResource" />
+                        <CentralAZ:ScheduledResourcePicker ID="srpResource" runat="server" Label="Resources" Required="false" AllowMultiSelect="false" OnSelectItem="srpResource_SelectItem" ValidationGroup="ReservationResource" />
                     </div>
                     <div class="col-md-6">
                         <Rock:NumberBox ID="nbQuantity" runat="server" NumberType="Integer" MinimumValue="1" ValidationGroup="ReservationResource" Label="Quantity" />

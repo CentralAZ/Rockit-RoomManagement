@@ -22,16 +22,19 @@ namespace com.centralaz.RoomManagement.Model
     {
 
         #region Entity Properties
-
+        [Required]
         [DataMember]
         public int ReservationId { get; set; }
 
+        [Required]
         [DataMember]
         public int ResourceId { get; set; }
 
+        [Required]
         [DataMember]
         public int Quantity { get; set; }
 
+        [Required]
         [DataMember]
         public bool IsApproved { get; set; }
 
@@ -42,6 +45,23 @@ namespace com.centralaz.RoomManagement.Model
         public virtual Reservation Reservation { get; set; }
 
         public virtual Resource Resource { get; set; }
+
+        public void CopyPropertiesFrom( ReservationResource source )
+        {
+            this.Id = source.Id;
+            this.ForeignGuid = source.ForeignGuid;
+            this.ForeignKey = source.ForeignKey;
+            this.ReservationId = source.ReservationId;
+            this.ResourceId = source.ResourceId;
+            this.Quantity = source.Quantity;
+            this.IsApproved = source.IsApproved;
+            this.CreatedDateTime = source.CreatedDateTime;
+            this.ModifiedDateTime = source.ModifiedDateTime;
+            this.CreatedByPersonAliasId = source.CreatedByPersonAliasId;
+            this.ModifiedByPersonAliasId = source.ModifiedByPersonAliasId;
+            this.Guid = source.Guid;
+            this.ForeignId = source.ForeignId;
+        }
 
         #endregion
 
@@ -58,7 +78,7 @@ namespace com.centralaz.RoomManagement.Model
         public ReservationResourceConfiguration()
         {
             this.HasRequired( r => r.Reservation ).WithMany( r => r.ReservationResources ).HasForeignKey( r => r.ReservationId ).WillCascadeOnDelete( true );
-            this.HasRequired( r => r.Resource ).WithMany().HasForeignKey( r => r.ResourceId ).WillCascadeOnDelete( false );
+            this.HasRequired( r => r.Resource ).WithMany().HasForeignKey( r => r.ResourceId ).WillCascadeOnDelete( true );
         }
     }
 
