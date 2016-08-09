@@ -55,6 +55,7 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -71,7 +72,17 @@
   <ItemGroup>
     <Compile Include="Controllers\ScheduledLocationsController.Partial.cs" />
     <Compile Include="Controllers\ScheduledResourcesController.Partial.cs" />
+    <Compile Include="Migrations\003_SampleData.cs" />
+    <Compile Include="Migrations\002_Pages.cs" />
     <Compile Include="Migrations\001_CreateDb.cs" />
+    <Compile Include="Model\ReservationWorkflowService.cs" />
+    <Compile Include="Model\ReservationWorkflowTriggerService.cs" />
+    <Compile Include="Model\ReservationStatusService.cs" />
+    <Compile Include="Model\ReservationMinistryService.cs" />
+    <Compile Include="Model\ReservationMinistry.cs" />
+    <Compile Include="Model\ReservationWorkflow.cs" />
+    <Compile Include="Model\ReservationWorkflowTrigger.cs" />
+    <Compile Include="Model\ReservationStatus.cs" />
     <Compile Include="Model\ReservationLocation.cs" />
     <Compile Include="Model\ReservationResource.cs" />
     <Compile Include="Model\ReservationLocationService.cs" />

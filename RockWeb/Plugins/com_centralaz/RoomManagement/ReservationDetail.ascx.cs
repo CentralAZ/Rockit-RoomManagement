@@ -218,7 +218,7 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
                 reservation.Schedule.iCalendarContent = sbSchedule.iCalendarContent;
             }
 
-            reservation.RequestorAliasId = CurrentPersonAliasId;
+            reservation.RequesterAliasId = CurrentPersonAliasId;
 
             if ( !reservation.IsApproved && tglIsApproved.Checked )
             {
@@ -232,7 +232,7 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
 
             if ( ddlMinistry.SelectedValueAsId().HasValue )
             {
-                reservation.MinistryId = ddlMinistry.SelectedValueAsId().Value;
+                reservation.ReservationMinistryId = ddlMinistry.SelectedValueAsId().Value;
             }
 
             reservation.IsApproved = tglIsApproved.Checked;
@@ -564,7 +564,7 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             ddlCampus.SetValue( reservation.CampusId );
 
             ddlMinistry.BindToDefinedType( DefinedTypeCache.Read( com.centralaz.RoomManagement.SystemGuid.DefinedType.MINISTRY.AsGuid() ), true );
-            ddlMinistry.SetValue( reservation.MinistryId );
+            ddlMinistry.SetValue( reservation.ReservationMinistryId );
             LoadPickers();
 
 

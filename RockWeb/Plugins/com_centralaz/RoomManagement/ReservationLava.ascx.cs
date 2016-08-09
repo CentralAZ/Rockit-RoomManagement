@@ -291,8 +291,8 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             {
                 qry = qry
                     .Where( r =>
-                        !r.MinistryId.HasValue ||    // All
-                        campusIds.Contains( r.MinistryId.Value ) );
+                        !r.ReservationMinistryId.HasValue ||    // All
+                        campusIds.Contains( r.ReservationMinistryId.Value ) );
             }
 
             // Filter by Time

@@ -14,7 +14,7 @@ using DDay.iCal;
 namespace com.centralaz.RoomManagement.Model
 {
     /// <summary>
-    /// A Room Resource
+    /// A Reservation Location
     /// </summary>
     [Table( "_com_centralaz_RoomManagement_ReservationLocation" )]
     [DataContract]

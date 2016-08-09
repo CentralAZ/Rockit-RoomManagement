@@ -295,14 +295,14 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             var ministryValueId = ddlMinistry.SelectedValueAsInt();
             if ( ministryValueId.HasValue )
             {
-                qry = qry.Where( r => r.MinistryId == ministryValueId );
+                qry = qry.Where( r => r.ReservationMinistryId == ministryValueId );
             }
 
             // Filter by Status
             var statusValueId = ddlStatus.SelectedValueAsInt();
             if ( statusValueId.HasValue )
             {
-                qry = qry.Where( r => r.StatusId == statusValueId );
+                qry = qry.Where( r => r.ReservationStatusId == statusValueId );
             }
 
             // Filter by Creator

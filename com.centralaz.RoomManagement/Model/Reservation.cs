@@ -33,13 +33,13 @@ namespace com.centralaz.RoomManagement.Model
         public int? CampusId { get; set; }
 
         [DataMember]
-        public int? MinistryId { get; set; }
+        public int? ReservationMinistryId { get; set; }
 
         [DataMember]
-        public int? StatusId { get; set; }
+        public int ReservationStatusId { get; set; }
 
         [DataMember]
-        public int? RequestorAliasId { get; set; }
+        public int? RequesterAliasId { get; set; }
 
         [DataMember]
         public int? ApproverAliasId { get; set; }
@@ -67,13 +67,20 @@ namespace com.centralaz.RoomManagement.Model
 
         public virtual Campus Campus { get; set; }
 
-        public virtual DefinedValue Ministry { get; set; }
+        public virtual ReservationMinistry ReservationMinistry { get; set; }
 
-        public virtual DefinedValue Status { get; set; }
+        public virtual ReservationStatus ReservationStatus { get; set; }
 
-        public virtual PersonAlias RequestorAlias { get; set; }
+        public virtual PersonAlias RequesterAlias { get; set; }
 
         public virtual PersonAlias ApproverAlias { get; set; }
+
+        public virtual ICollection<ReservationWorkflow> ReservationWorkflows
+        {
+            get { return _reservationWorkflows; }
+            set { _reservationWorkflows = value; }
+        }
+        private ICollection<ReservationWorkflow> _reservationWorkflows;
 
         public virtual ICollection<ReservationResource> ReservationResources
         {
@@ -149,10 +156,10 @@ namespace com.centralaz.RoomManagement.Model
         public ReservationConfiguration()
         {
             this.HasRequired( r => r.Campus ).WithMany().HasForeignKey( r => r.CampusId ).WillCascadeOnDelete( false );
-            this.HasRequired( r => r.Ministry ).WithMany().HasForeignKey( r => r.MinistryId ).WillCascadeOnDelete( false );
-            this.HasRequired( r => r.Status ).WithMany().HasForeignKey( r => r.StatusId ).WillCascadeOnDelete( false );
+            this.HasRequired( r => r.ReservationMinistry ).WithMany().HasForeignKey( r => r.ReservationMinistryId ).WillCascadeOnDelete( false );
+            this.HasRequired( r => r.ReservationStatus ).WithMany().HasForeignKey( r => r.ReservationStatusId ).WillCascadeOnDelete( false );
             this.HasRequired( r => r.Schedule ).WithMany().HasForeignKey( r => r.ScheduleId ).WillCascadeOnDelete( false );
-            this.HasRequired( r => r.RequestorAlias ).WithMany().HasForeignKey( r => r.RequestorAliasId ).WillCascadeOnDelete( false );
+            this.HasRequired( r => r.RequesterAlias ).WithMany().HasForeignKey( r => r.RequesterAliasId ).WillCascadeOnDelete( false );
             this.HasRequired( r => r.ApproverAlias ).WithMany().HasForeignKey( r => r.ApproverAliasId ).WillCascadeOnDelete( false );
         }
     }
