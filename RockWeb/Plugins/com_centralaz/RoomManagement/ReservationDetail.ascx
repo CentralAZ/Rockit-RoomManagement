@@ -24,6 +24,9 @@
                             <div class="col-md-6">
                                 <Rock:NumberBox ID="nbAttending" runat="server" NumberType="Integer" MinimumValue="0" Label="Number Attending" Required="false" />
                             </div>
+                            <div class="col-md-6">
+                                <Rock:RockRadioButtonList ID="rblStatus" runat="server" Label="Status" Required="true" RepeatDirection="Horizontal" />
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-6">

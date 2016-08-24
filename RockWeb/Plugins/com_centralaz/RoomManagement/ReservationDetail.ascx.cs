@@ -136,7 +136,8 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             }
             else
             {
-                // don't show a breadcrumb if we don't have a pageparam to work with
+                breadCrumbs.Add( new BreadCrumb( "New Reservation", pageReference ) );
+                lPanelTitle.Text = "New Reservation";
             }
 
             return breadCrumbs;
@@ -233,6 +234,11 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             if ( ddlMinistry.SelectedValueAsId().HasValue )
             {
                 reservation.ReservationMinistryId = ddlMinistry.SelectedValueAsId().Value;
+            }
+
+            if ( rblStatus.SelectedValueAsId().HasValue )
+            {
+                reservation.ReservationStatusId = rblStatus.SelectedValueAsId().Value;
             }
 
             reservation.IsApproved = tglIsApproved.Checked;
@@ -563,8 +569,23 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             }
             ddlCampus.SetValue( reservation.CampusId );
 
-            ddlMinistry.BindToDefinedType( DefinedTypeCache.Read( com.centralaz.RoomManagement.SystemGuid.DefinedType.MINISTRY.AsGuid() ), true );
+            ddlMinistry.DataSource = new ReservationMinistryService( rockContext ).Queryable().ToList();
+            ddlMinistry.DataBind();
             ddlMinistry.SetValue( reservation.ReservationMinistryId );
+
+            var statuses = new ReservationStatusService( rockContext ).Queryable().ToList();
+            rblStatus.DataSource = statuses;
+            rblStatus.DataTextField = "Name";
+            rblStatus.DataValueField = "Id";
+            rblStatus.DataBind();
+            if ( reservation.ReservationStatusId != null && reservation.ReservationStatusId != 0 )
+            {
+                rblStatus.SetValue( reservation.ReservationStatusId );
+            }
+            else
+            {
+                rblStatus.SetValue( statuses.Where( s => s.IsDefault ).FirstOrDefault() );
+            }
             LoadPickers();
 
 
@@ -588,7 +609,7 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             int reservationId = PageParameter( "ReservationId" ).AsInteger();
             string encodedCalendarContent = Uri.EscapeUriString( sbSchedule.iCalendarContent );
             srpResource.ItemRestUrlExtraParams += String.Format( "&reservationId={0}&iCalendarContent={1}&setupTime={2}&cleanupTime={3}", reservationId, encodedCalendarContent, nbSetupTime.Text.AsInteger(), nbCleanupTime.Text.AsInteger() );
-           // lpLocation.ItemRestUrlExtraParams = String.Format( "?reservationId={0}&iCalendarContent={1}&setupTime={2}&cleanupTime={3}", reservationId, encodedCalendarContent, nbSetupTime.Text.AsInteger(), nbCleanupTime.Text.AsInteger() );
+            //lpLocation.ItemRestUrlExtraParams = String.Format( "?reservationId={0}&iCalendarContent={1}&setupTime={2}&cleanupTime={3}", reservationId, encodedCalendarContent, nbSetupTime.Text.AsInteger(), nbCleanupTime.Text.AsInteger() );
         }
 
         private void Hydrate( List<ReservationResource> resourcesState, RockContext rockContext )
