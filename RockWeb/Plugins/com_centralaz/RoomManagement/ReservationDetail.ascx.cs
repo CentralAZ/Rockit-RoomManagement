@@ -569,8 +569,13 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             }
             ddlCampus.SetValue( reservation.CampusId );
 
-            ddlMinistry.DataSource = new ReservationMinistryService( rockContext ).Queryable().ToList();
-            ddlMinistry.DataBind();
+            ddlMinistry.Items.Clear();
+            ddlMinistry.Items.Add( new ListItem( string.Empty, string.Empty ) );
+
+            foreach(var ministry in new ReservationMinistryService( rockContext ).Queryable().ToList() )
+            {
+                ddlMinistry.Items.Add( new ListItem( ministry.Name, ministry.Id.ToString().ToUpper() ) );
+            }
             ddlMinistry.SetValue( reservation.ReservationMinistryId );
 
             var statuses = new ReservationStatusService( rockContext ).Queryable().ToList();
