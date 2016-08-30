@@ -146,7 +146,7 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
 
                         break;
                     }
-                case "Resource":
+                case "Resources":
                     {
                         var resourceIdList = e.Value.Split( ',' ).AsIntegerList();
                         if ( resourceIdList.Any() && rpResource.Visible )
@@ -169,7 +169,7 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
 
                         break;
                     }
-                case "Location":
+                case "Locations":
                     {
                         var locationIdList = e.Value.Split( ',' ).AsIntegerList();
                         if ( locationIdList.Any() && lipLocation.Visible )

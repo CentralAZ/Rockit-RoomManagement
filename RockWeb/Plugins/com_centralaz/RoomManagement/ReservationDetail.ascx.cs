@@ -221,7 +221,7 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
 
             reservation.RequesterAliasId = CurrentPersonAliasId;
 
-            if ( !reservation.IsApproved && tglIsApproved.Checked )
+            if ( !reservation.IsApproved )
             {
                 reservation.ApproverAliasId = CurrentPersonAliasId;
             }
@@ -241,7 +241,6 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
                 reservation.ReservationStatusId = rblStatus.SelectedValueAsId().Value;
             }
 
-            reservation.IsApproved = tglIsApproved.Checked;
             reservation.Note = rtbNote.Text;
             reservation.Name = rtbName.Text;
             reservation.NumberAttending = nbAttending.Text.AsInteger();
@@ -551,7 +550,6 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             }
 
             rtbName.Text = reservation.Name;
-            tglIsApproved.Checked = reservation.IsApproved;
             rtbNote.Text = reservation.Note;
             nbAttending.Text = reservation.NumberAttending.ToString();
             nbSetupTime.Text = reservation.SetupTime.ToString();
@@ -572,7 +570,7 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             ddlMinistry.Items.Clear();
             ddlMinistry.Items.Add( new ListItem( string.Empty, string.Empty ) );
 
-            foreach(var ministry in new ReservationMinistryService( rockContext ).Queryable().ToList() )
+            foreach ( var ministry in new ReservationMinistryService( rockContext ).Queryable().ToList() )
             {
                 ddlMinistry.Items.Add( new ListItem( ministry.Name, ministry.Id.ToString().ToUpper() ) );
             }

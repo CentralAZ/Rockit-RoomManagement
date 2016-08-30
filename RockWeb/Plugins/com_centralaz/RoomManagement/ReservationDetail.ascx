@@ -9,9 +9,6 @@
             <div class="panel-heading">
                 <h1 class="panel-title">
                     <asp:Literal ID="lPanelTitle" runat="server" /></h1>
-                <div class="pull-right">
-                    <Rock:Toggle ID="tglIsApproved" runat="server" OffText="Unapproved" OnText="Approved" OnCssClass="btn-success" OffCssClass="btn-warning" ButtonSizeCssClass="btn-xs" />
-                </div>
             </div>
             <div class="panel-body">
                 <div class="row">
