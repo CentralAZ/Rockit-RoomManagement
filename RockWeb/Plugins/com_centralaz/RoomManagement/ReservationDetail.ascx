@@ -30,7 +30,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <Rock:ScheduleBuilder ID="sbSchedule" runat="server" Label="Times" Required="true" OnSaveSchedule="sbSchedule_SaveSchedule" />
-                                <CentralAZ:ScheduledLocationItemPicker ID="lpLocation" runat="server" Label="Locations" Required="false" AllowMultiSelect="true" OnSelectItem="lpLocation_SelectItem" />
+                                <CentralAZ:ScheduledLocationItemPicker ID="slpLocation" runat="server" Label="Locations" Required="false" AllowMultiSelect="true" OnSelectItem="slpLocation_SelectItem" Enabled="false" />
                             </div>
                             <div class="col-md-6">
                                 <Rock:NumberBox ID="nbSetupTime" runat="server" NumberType="Integer" MinimumValue="0" Label="Setup Time" Required="false" OnTextChanged="nbSetupTime_TextChanged" Help="The number of minutes it will take to set up the event." />
@@ -53,7 +53,7 @@
                 </div>
                 <div class="actions">
                     <asp:LinkButton ID="btnSave" runat="server" Text="Save" CssClass="btn btn-primary" OnClick="btnSave_OnClick" />
-                    <asp:LinkButton ID="btnCancel" runat="server" Text="Cancel" CssClass="btn btn-link" OnClick="btnCancel_OnClick" />
+                    <asp:LinkButton ID="btnCancel" runat="server" Text="Cancel" CssClass="btn btn-link" OnClick="btnCancel_OnClick" CausesValidation="false" />
                 </div>
             </div>
         </asp:Panel>
@@ -63,7 +63,7 @@
                 <asp:ValidationSummary ID="valReservationResourceSummary" runat="server" HeaderText="Please Correct the Following" CssClass="alert alert-danger" ValidationGroup="ReservationResource" />
                 <div class="row">
                     <div class="col-md-6">
-                        <CentralAZ:ScheduledResourcePicker ID="srpResource" runat="server" Label="Resources" Required="false" AllowMultiSelect="false" OnSelectItem="srpResource_SelectItem" ValidationGroup="ReservationResource" />
+                        <CentralAZ:ScheduledResourcePicker ID="srpResource" runat="server" Label="Resources" Required="false" Enabled="false" AllowMultiSelect="false" OnSelectItem="srpResource_SelectItem" ValidationGroup="ReservationResource" />
                     </div>
                     <div class="col-md-6">
                         <Rock:NumberBox ID="nbQuantity" runat="server" NumberType="Integer" MinimumValue="1" ValidationGroup="ReservationResource" Label="Quantity" />

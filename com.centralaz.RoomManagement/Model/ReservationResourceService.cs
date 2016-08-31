@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Rock;
 using Rock.Data;
 using Rock.Model;
 
@@ -33,9 +34,9 @@ namespace com.centralaz.RoomManagement.Model
             var rockContext = new RockContext();
             var reservationService = new ReservationService( rockContext );
             List<Reservation> newReservationList = new List<Reservation>() { reservation };
-            var currentReservationSummaries = reservationService.GetReservationSummaries( reservationService.Queryable().Where( r => r.Id != reservation.Id ), DateTime.Now, DateTime.Now.AddDays( 3 ) );
+            var currentReservationSummaries = reservationService.GetReservationSummaries( reservationService.Queryable().Where( r => r.Id != reservation.Id ), RockDateTime.Now.AddMonths( -1 ), RockDateTime.Now.AddYears( 1 ) );
 
-            var reservedQuantities = reservationService.GetReservationSummaries( newReservationList.AsQueryable(), DateTime.Now, DateTime.Now.AddDays( 3 ) )
+            var reservedQuantities = reservationService.GetReservationSummaries( newReservationList.AsQueryable(), RockDateTime.Now.AddMonths( -1 ), RockDateTime.Now.AddYears( 1 ) )
                 .Select( newReservationSummary =>
                     currentReservationSummaries.Where( currentReservationSummary =>
                      ( currentReservationSummary.ReservationStartDateTime > newReservationSummary.ReservationStartDateTime || currentReservationSummary.ReservationEndDateTime > newReservationSummary.ReservationStartDateTime ) &&

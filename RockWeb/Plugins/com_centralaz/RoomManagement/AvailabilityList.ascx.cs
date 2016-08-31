@@ -376,7 +376,7 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
                 {
                     Id = resource.Id,
                     Name = resource.Name,
-                    IsAvailable = !reservationSummaryList.Any( reservation => reservation.ReservationResources.Any( rr => rr.ResourceId == resource.Id ) ),
+                    IsAvailable = resource.Quantity - reservedResources > 0,
                     Availability = resource.Quantity - reservedResources > 0 ? String.Format( "{0} Available", resource.Quantity - reservedResources ) : reservationSummaryList.Where( reservation => reservation.ReservationResources.Any( rr => rr.ResourceId == resource.Id ) ).Select( reservation => reservation.ReservationName + "</br>" + reservation.ReservationDateTimeDescription ).ToList().AsDelimited( "</br></br>" )
                 };
             } ).OrderBy( l => l.Name ).ToList();

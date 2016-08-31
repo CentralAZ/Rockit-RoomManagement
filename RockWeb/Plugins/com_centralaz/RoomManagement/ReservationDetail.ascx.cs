@@ -179,7 +179,7 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
                 }
             }
 
-            var locationIds = lpLocation.SelectedValuesAsInt();
+            var locationIds = slpLocation.SelectedValuesAsInt();
             foreach ( var locationId in locationIds.Where( l => l != 0 ) )
             {
                 ReservationLocation reservationLocation = reservation.ReservationLocations.Where( l => l.LocationId == locationId ).FirstOrDefault();
@@ -297,11 +297,11 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
         }
 
         /// <summary>
-        /// Handles the SelectItem event of the lpLocation control.
+        /// Handles the SelectItem event of the slpLocation control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        protected void lpLocation_SelectItem( object sender, EventArgs e )
+        protected void slpLocation_SelectItem( object sender, EventArgs e )
         {
 
         }
@@ -516,7 +516,7 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
 
                 if ( PageParameter( "LocationId" ).AsInteger() != 0 )
                 {
-                    lpLocation.SetValue( PageParameter( "LocationId" ).AsInteger() );
+                    slpLocation.SetValue( PageParameter( "LocationId" ).AsInteger() );
                 }
             }
 
@@ -540,7 +540,7 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             var locationIds = reservation.ReservationLocations.Select( rl => rl.LocationId ).ToList();
             if ( locationIds.Count > 0 )
             {
-                lpLocation.SetValues( locationIds );
+                slpLocation.SetValues( locationIds );
             }
 
             var resourceIds = reservation.ReservationResources.Select( rr => rr.ResourceId ).ToList();
@@ -581,7 +581,7 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             rblStatus.DataTextField = "Name";
             rblStatus.DataValueField = "Id";
             rblStatus.DataBind();
-            if ( reservation.ReservationStatusId != null && reservation.ReservationStatusId != 0 )
+            if ( reservation.ReservationStatusId != 0 )
             {
                 rblStatus.SetValue( reservation.ReservationStatusId );
             }
@@ -589,8 +589,6 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             {
                 rblStatus.SetValue( statuses.Where( s => s.IsDefault ).FirstOrDefault() );
             }
-            LoadPickers();
-
 
         }
 
@@ -609,10 +607,12 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
         /// </summary>
         private void LoadPickers()
         {
+            srpResource.Enabled = true;
+            slpLocation.Enabled = true;
             int reservationId = PageParameter( "ReservationId" ).AsInteger();
             string encodedCalendarContent = Uri.EscapeUriString( sbSchedule.iCalendarContent );
             srpResource.ItemRestUrlExtraParams += String.Format( "&reservationId={0}&iCalendarContent={1}&setupTime={2}&cleanupTime={3}", reservationId, encodedCalendarContent, nbSetupTime.Text.AsInteger(), nbCleanupTime.Text.AsInteger() );
-            //lpLocation.ItemRestUrlExtraParams = String.Format( "?reservationId={0}&iCalendarContent={1}&setupTime={2}&cleanupTime={3}", reservationId, encodedCalendarContent, nbSetupTime.Text.AsInteger(), nbCleanupTime.Text.AsInteger() );
+            slpLocation.ItemRestUrlExtraParams += String.Format( "?reservationId={0}&iCalendarContent={1}&setupTime={2}&cleanupTime={3}", reservationId, encodedCalendarContent, nbSetupTime.Text.AsInteger(), nbCleanupTime.Text.AsInteger() );
         }
 
         private void Hydrate( List<ReservationResource> resourcesState, RockContext rockContext )

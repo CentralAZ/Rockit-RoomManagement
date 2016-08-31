@@ -39,7 +39,7 @@ namespace com.centralaz.RoomManagement.Web.UI.Controls
         /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
         protected override void OnInit( EventArgs e )
         {
-            this.ItemRestUrlExtraParams = "/0";
+            ItemRestUrlExtraParams = "/0";
             this.IconCssClass = "fa fa-home";
             base.OnInit( e );
         }
@@ -154,7 +154,5 @@ namespace com.centralaz.RoomManagement.Web.UI.Controls
         {
             get { return "~/api/ScheduledLocations/GetChildren/"; }
         }
-
-
     }
 }

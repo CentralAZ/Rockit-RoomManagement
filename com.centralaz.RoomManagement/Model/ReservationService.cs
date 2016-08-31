@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Rock;
 using Rock.Data;
 using Rock.Model;
 
@@ -76,8 +77,8 @@ namespace com.centralaz.RoomManagement.Model
 
         public List<int> GetReservedLocationIds( Reservation newReservation )
         {
-            var newReservationSummaries = GetReservationSummaries( new List<Reservation>() { newReservation }.AsQueryable(), DateTime.Now, DateTime.Now.AddDays( 3 ) );
-            var reservedLocationIds = GetReservationSummaries( Queryable().Where( r => r.Id != newReservation.Id ), DateTime.Now, DateTime.Now.AddDays( 3 ) )
+            var newReservationSummaries = GetReservationSummaries( new List<Reservation>() { newReservation }.AsQueryable(), RockDateTime.Now.AddMonths(-1), RockDateTime.Now.AddYears( 1 ) );
+            var reservedLocationIds = GetReservationSummaries( Queryable().Where( r => r.Id != newReservation.Id ), RockDateTime.Now.AddMonths( -1 ), RockDateTime.Now.AddYears( 1 ) )
                 .Where( currentReservationSummary => newReservationSummaries.Any( newReservationSummary =>
                  ( currentReservationSummary.ReservationStartDateTime > newReservationSummary.ReservationStartDateTime || currentReservationSummary.ReservationEndDateTime > newReservationSummary.ReservationStartDateTime ) &&
                  ( currentReservationSummary.ReservationStartDateTime < newReservationSummary.ReservationEndDateTime || currentReservationSummary.ReservationEndDateTime < newReservationSummary.ReservationEndDateTime )
