@@ -56,7 +56,7 @@ namespace com.centralaz.RoomManagement.Model
                         reservationSummaryList.Add( new ReservationSummary
                         {
                             Id = reservation.Id,
-                            Status = reservation.IsApproved,
+                            Status = reservation.ReservationStatus!= null ? reservation.ReservationStatus.Name : reservation.IsApproved ? "Approved" : "Needs Approval",
                             ReservationName = reservation.Name,
                             ReservationLocations = reservation.ReservationLocations.ToList(),
                             ReservationResources = reservation.ReservationResources.ToList(),
@@ -110,7 +110,7 @@ namespace com.centralaz.RoomManagement.Model
         public class ReservationSummary
         {
             public int Id { get; set; }
-            public bool Status { get; set; }
+            public String Status { get; set; }
             public String ReservationName { get; set; }
             public String EventDateTimeDescription { get; set; }
             public String EventTimeDescription { get; set; }

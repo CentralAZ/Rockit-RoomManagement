@@ -306,7 +306,7 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             {
                 Id = r.Id,
                 ReservationName = r.ReservationName,
-                Status = r.Status ? "Approved" : "Unapproved",
+                Status = r.Status,
                 Locations = r.ReservationLocations.Select( rl => rl.Location.Name ).ToList().AsDelimited( ", " ),
                 Resources = r.ReservationResources.Select( rr => rr.Resource.Name + " (" + rr.Quantity + ")" ).ToList().AsDelimited( ", " ),
                 CalendarDate = r.EventStartDateTime.ToLongDateString(),
