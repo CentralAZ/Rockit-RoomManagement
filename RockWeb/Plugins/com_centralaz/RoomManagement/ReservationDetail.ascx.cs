@@ -17,6 +17,7 @@ using Rock.Web.Cache;
 using Rock.Web.UI;
 using Newtonsoft.Json;
 using Rock.Web.UI.Controls;
+using Rock.Security;
 
 namespace RockWeb.Plugins.com_centralaz.RoomManagement
 {
@@ -313,6 +314,8 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         protected void sbSchedule_SaveSchedule( object sender, EventArgs e )
         {
+            var schedule = new Schedule { iCalendarContent = sbSchedule.iCalendarContent };
+            lScheduleText.Text = schedule.FriendlyScheduleText;
             LoadPickers();
         }
 
@@ -400,6 +403,7 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             ResourcesState.Add( reservationResource );
             BindReservationResourcesGrid();
             dlgReservationResource.Hide();
+            hfActiveDialog.Value = string.Empty;
         }
 
         /// <summary>
@@ -456,6 +460,7 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             }
 
             hfAddReservationResourceGuid.Value = reservationResourceGuid.ToString();
+            hfActiveDialog.Value = "dlgReservationResource";
             dlgReservationResource.Show();
         }
 
@@ -524,6 +529,9 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             if ( reservation.Schedule != null )
             {
                 sbSchedule.iCalendarContent = reservation.Schedule.iCalendarContent;
+                lScheduleText.Text = reservation.Schedule.FriendlyScheduleText;
+                srpResource.Enabled = true;
+                slpLocation.Enabled = true;
             }
             else
             {
@@ -576,11 +584,14 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             }
             ddlMinistry.SetValue( reservation.ReservationMinistryId );
 
+            rblStatus.Items.Clear();
             var statuses = new ReservationStatusService( rockContext ).Queryable().ToList();
-            rblStatus.DataSource = statuses;
-            rblStatus.DataTextField = "Name";
-            rblStatus.DataValueField = "Id";
-            rblStatus.DataBind();
+            foreach(var status in statuses )
+            {
+                var authorized = status.IsAuthorized( Authorization.EDIT, CurrentPerson );
+                rblStatus.Items.Add( new ListItem( status.Name, status.Id.ToString(), authorized ) );
+            }
+                      
             if ( reservation.ReservationStatusId != 0 )
             {
                 rblStatus.SetValue( reservation.ReservationStatusId );

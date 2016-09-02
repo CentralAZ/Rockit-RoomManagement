@@ -1,6 +1,10 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ReservationDetail.ascx.cs" Inherits="RockWeb.Plugins.com_centralaz.RoomManagement.ReservationDetail" %>
 <%@ Register TagPrefix="CentralAZ" Assembly="com.centralaz.RoomManagement" Namespace="com.centralaz.RoomManagement.Web.UI.Controls" %>
-
+<script type="text/javascript">
+    function clearActiveDialog() {
+        $('#<%=hfActiveDialog.ClientID %>').val('');
+    }
+</script>
 <asp:UpdatePanel ID="upnlContent" runat="server">
     <ContentTemplate>
         <Rock:NotificationBox ID="nbErrorWarning" runat="server" NotificationBoxType="Danger" />
@@ -22,14 +26,17 @@
                                 <Rock:NumberBox ID="nbAttending" runat="server" NumberType="Integer" MinimumValue="0" Label="Number Attending" Required="false" />
                             </div>
                             <div class="col-md-6">
-                                <Rock:RockRadioButtonList ID="rblStatus" runat="server" Label="Status" Required="true" RepeatDirection="Horizontal" />
+                                <Rock:RockRadioButtonList ID="rblStatus" runat="server" Label="Status" Required="true" RepeatDirection="Horizontal" AutoPostBack="true"/>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="row">
                             <div class="col-md-6">
-                                <Rock:ScheduleBuilder ID="sbSchedule" runat="server" Label="Times" Required="true" OnSaveSchedule="sbSchedule_SaveSchedule" />
+                                <Rock:RockControlWrapper ID="rcwSchedule" runat="server" Label="Schedule">
+                                    <Rock:ScheduleBuilder ID="sbSchedule" runat="server" ValidationGroup="Schedule" Required="true" OnSaveSchedule="sbSchedule_SaveSchedule" />
+                                    <asp:Literal ID="lScheduleText" runat="server" />
+                                </Rock:RockControlWrapper>
                                 <CentralAZ:ScheduledLocationItemPicker ID="slpLocation" runat="server" Label="Locations" Required="false" AllowMultiSelect="true" OnSelectItem="slpLocation_SelectItem" Enabled="false" />
                             </div>
                             <div class="col-md-6">
@@ -57,6 +64,9 @@
                 </div>
             </div>
         </asp:Panel>
+
+        <asp:HiddenField ID="hfActiveDialog" runat="server" />
+
         <Rock:ModalDialog ID="dlgReservationResource" runat="server" Title="Select Resource" OnSaveClick="dlgReservationResource_SaveClick" OnCancelScript="clearActiveDialog();" ValidationGroup="ReservationResource">
             <Content>
                 <asp:HiddenField ID="hfAddReservationResourceGuid" runat="server" />

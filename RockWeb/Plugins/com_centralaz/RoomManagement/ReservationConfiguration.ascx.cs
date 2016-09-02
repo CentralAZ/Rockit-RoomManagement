@@ -99,7 +99,9 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
         protected override void OnInit( EventArgs e )
         {
             base.OnInit( e );
-            bool editAllowed = IsUserAuthorized( Authorization.ADMINISTRATE );
+
+            SecurityField securityField = gStatuses.Columns[2] as SecurityField;
+            securityField.EntityTypeId = EntityTypeCache.Read( typeof( com.centralaz.RoomManagement.Model.ReservationStatus ) ).Id;
 
             gMinistries.DataKeyNames = new string[] { "Guid" };
             gMinistries.Actions.ShowAdd = true;
@@ -528,7 +530,9 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
         {
             SetReservationStatusListOrder( StatusesState );
             gStatuses.DataSource = StatusesState.OrderBy( a => a.Name ).ToList();
+            gStatuses.EntityTypeId = EntityTypeCache.Read<com.centralaz.RoomManagement.Model.ReservationStatus>().Id;
             gStatuses.DataBind();
+
         }
 
         /// <summary>

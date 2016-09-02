@@ -11,8 +11,7 @@
 
         <asp:Panel ID="pnlDetails" CssClass="panel panel-block" runat="server" Visible="false">
             <div class="panel-heading">
-                <h1 class="panel-title">
-                    Reservation Configuration</h1>
+                <h1 class="panel-title">Reservation Configuration</h1>
             </div>
             <div class="panel-body">
                 <Rock:NotificationBox ID="nbEditModeMessage" runat="server" NotificationBoxType="Info" />
@@ -38,6 +37,7 @@
                                 <Columns>
                                     <Rock:RockBoundField DataField="Name" HeaderText="Name" />
                                     <Rock:RockBoundField DataField="Description" HeaderText="Description" />
+                                    <Rock:SecurityField />
                                     <Rock:EditField OnClick="gStatuses_Edit" />
                                     <Rock:DeleteField OnClick="gStatuses_Delete" />
                                 </Columns>
