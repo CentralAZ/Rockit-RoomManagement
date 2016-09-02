@@ -371,7 +371,10 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             // Bind to Grid
             gResources.DataSource = resourceList.Select( resource =>
             {
-                var reservedResources = reservationSummaryList.Sum( reservation => reservation.ReservationResources.Where( rr => rr.ResourceId == resource.Id ).Sum( rr => rr.Quantity ) );
+                var reservedResources = reservationSummaryList.Where( reservationSummary =>
+                     ( reservationSummary.ReservationStartDateTime > filterStartDateTime || reservationSummary.ReservationEndDateTime > filterStartDateTime ) &&
+                     ( reservationSummary.ReservationStartDateTime < filterEndDateTime || reservationSummary.ReservationEndDateTime < filterEndDateTime )
+                    ).DistinctBy(reservationSummary=> reservationSummary.Id).Sum( reservationSummary => reservationSummary.ReservationResources.Where( rr => rr.ResourceId == resource.Id ).Sum( rr => rr.Quantity ) );
                 return new
                 {
                     Id = resource.Id,
