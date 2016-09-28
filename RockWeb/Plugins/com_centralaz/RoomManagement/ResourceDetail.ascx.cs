@@ -69,6 +69,41 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             }
         }
 
+        /// <summary>
+        /// Returns breadcrumbs specific to the block that should be added to navigation
+        /// based on the current page reference.  This function is called during the page's
+        /// oninit to load any initial breadcrumbs
+        /// </summary>
+        /// <param name="pageReference">The page reference.</param>
+        /// <returns></returns>
+        public override List<BreadCrumb> GetBreadCrumbs( PageReference pageReference )
+        {
+            var breadCrumbs = new List<BreadCrumb>();
+
+            int? resourceId = PageParameter( pageReference, "ResourceId" ).AsIntegerOrNull();
+            if ( resourceId != null )
+            {
+                Resource resource = new ResourceService( new RockContext() ).Get( resourceId.Value );
+                if ( resource != null )
+                {
+                    breadCrumbs.Add( new BreadCrumb( resource.Name, pageReference ) );
+                    lReadOnlyTitle.Text = resource.Name.FormatAsHtmlTitle();
+                }
+                else
+                {
+                    breadCrumbs.Add( new BreadCrumb( "New Resource", pageReference ) );
+                    lReadOnlyTitle.Text = "New Resource";
+                }
+            }
+            else
+            {
+                breadCrumbs.Add( new BreadCrumb( "New Resource", pageReference ) );
+                lReadOnlyTitle.Text = "New Resource";
+            }
+
+            return breadCrumbs;
+        }
+
         #endregion
 
         #region Edit Events
@@ -198,12 +233,10 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
 
             if ( resource.Id.Equals( 0 ) )
             {
-                lReadOnlyTitle.Text = ActionTitle.Add( "New Resource" ).FormatAsHtmlTitle();
                 btnSaveThenAdd.Visible = true;
             }
             else
             {
-                lReadOnlyTitle.Text = resource.Name.FormatAsHtmlTitle();
                 btnSaveThenAdd.Visible = false;
             }
 

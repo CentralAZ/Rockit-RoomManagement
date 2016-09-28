@@ -57,6 +57,7 @@ namespace com.centralaz.RoomManagement.Migrations
             RockMigrationHelper.AddPage( "7638AF8B-E4C0-4C02-93B8-72A829ECACDB", "D65F783D-87A9-4CC9-8110-E83466A0EADB", "New Reservation", "", "4CBD2B96-E076-46DF-A576-356BCA5E577F", "" ); // Site:Rock RMS
             RockMigrationHelper.UpdateBlockType( "Reservation Detail", "Block for viewing a reservation detail", "~/Plugins/com_centralaz/RoomManagement/ReservationDetail.ascx", "com_centralaz > Room Management", "C938B1DE-9AB3-46D9-AB28-57BFCA362AEB" );
             RockMigrationHelper.AddBlock( "4CBD2B96-E076-46DF-A576-356BCA5E577F", "", "C938B1DE-9AB3-46D9-AB28-57BFCA362AEB", "Reservation Detail", "Main", "", "", 0, "65091E04-77CE-411C-989F-EAD7D15778A0" );
+            Sql( "UPDATE [Page] SET [BreadCrumbDisplayName] = 0 WHERE [Guid] = '4CBD2B96-E076-46DF-A576-356BCA5E577F'" );
 
             // Page: Search Reservations
             RockMigrationHelper.AddPage( "7638AF8B-E4C0-4C02-93B8-72A829ECACDB", "D65F783D-87A9-4CC9-8110-E83466A0EADB", "Search Reservations", "", "1C58D731-F590-4AAC-8B8C-FD42B428B69A", "" ); // Site:Rock RMS
@@ -89,6 +90,7 @@ namespace com.centralaz.RoomManagement.Migrations
             RockMigrationHelper.AddBlock( "15EDB2B6-BB6B-431E-A9AA-829489D87EDD", "", "84F92545-49C5-4FF6-A7B1-099A9662F42D", "Resource List", "Main", "", "", 0, "BFFDFD88-EA8D-47D1-80F0-4B0D05523E69" );
             RockMigrationHelper.AddBlockTypeAttribute( "84F92545-49C5-4FF6-A7B1-099A9662F42D", "BD53F9C9-EBA9-4D3F-82EA-DE5DD34A8108", "Detail Page", "DetailPage", "", "", 0, @"", "0C023434-43B7-4086-B469-B541FE47561C" );
             RockMigrationHelper.AddBlockAttributeValue( "BFFDFD88-EA8D-47D1-80F0-4B0D05523E69", "0C023434-43B7-4086-B469-B541FE47561C", @"b75a0c7e-4a15-4892-a857-bade8b5dd4ca" ); // Detail Page
+            Sql( "UPDATE [Page] SET [BreadCrumbDisplayName] = 0 WHERE [Guid] = '15EDB2B6-BB6B-431E-A9AA-829489D87EDD'" );
 
             // Page: Resource Categories
             RockMigrationHelper.AddPage( "0FF1D7F4-BF6D-444A-BD71-645BD764EC40", "D65F783D-87A9-4CC9-8110-E83466A0EADB", "Resource Categories", "", "455FFF96-AE2A-435A-B3E2-F6C32754E53A", "fa fa-folder" ); // Site:Rock RMS
