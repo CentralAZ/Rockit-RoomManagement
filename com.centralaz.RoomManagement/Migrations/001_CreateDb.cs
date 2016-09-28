@@ -361,7 +361,11 @@ namespace com.centralaz.RoomManagement.Migrations
 " );
             RockMigrationHelper.UpdateEntityType( "com.centralaz.RoomManagement.Model.Reservation", "839768A3-10D6-446C-A65B-B8F9EFD7808F", true, true );
             RockMigrationHelper.UpdateEntityType( "com.centralaz.RoomManagement.Model.ReservationLocation", "07084E96-2907-4741-80DF-016AB5981D12", true, true );
+            RockMigrationHelper.UpdateEntityType( "com.centralaz.RoomManagement.Model.ReservationMinistry", "5DFCA44E-7090-455C-8C7B-D02CF6331A0F", true, true );
             RockMigrationHelper.UpdateEntityType( "com.centralaz.RoomManagement.Model.ReservationResource", "A9A1F735-0298-4137-BCC1-A9117B6543C9", true, true );
+            RockMigrationHelper.UpdateEntityType( "com.centralaz.RoomManagement.Model.ReservationStatus", "5241B2B1-AEF2-4EB9-9737-55604069D93B", true, true );
+            RockMigrationHelper.UpdateEntityType( "com.centralaz.RoomManagement.Model.ReservationWorkflow", "3660E6A9-B3DA-4CCB-8FC8-B182BC1A2587", true, true );
+            RockMigrationHelper.UpdateEntityType( "com.centralaz.RoomManagement.Model.ReservationWorkflowTrigger", "CD0C935B-C3EF-465B-964E-A3AB686D8F51", true, true );
             RockMigrationHelper.UpdateEntityType( "com.centralaz.RoomManagement.Model.Resource", "35584736-8FE2-48DA-9121-3AFD07A2DA8D", true, true );
 
         }
@@ -369,7 +373,11 @@ namespace com.centralaz.RoomManagement.Migrations
         {
             RockMigrationHelper.DeleteEntityType( "839768A3-10D6-446C-A65B-B8F9EFD7808F" );
             RockMigrationHelper.DeleteEntityType( "07084E96-2907-4741-80DF-016AB5981D12" );
+            RockMigrationHelper.DeleteEntityType( "5DFCA44E-7090-455C-8C7B-D02CF6331A0F" );
             RockMigrationHelper.DeleteEntityType( "A9A1F735-0298-4137-BCC1-A9117B6543C9" );
+            RockMigrationHelper.DeleteEntityType( "5241B2B1-AEF2-4EB9-9737-55604069D93B" );
+            RockMigrationHelper.DeleteEntityType( "3660E6A9-B3DA-4CCB-8FC8-B182BC1A2587" );
+            RockMigrationHelper.DeleteEntityType( "CD0C935B-C3EF-465B-964E-A3AB686D8F51" );
             RockMigrationHelper.DeleteEntityType( "35584736-8FE2-48DA-9121-3AFD07A2DA8D" );
 
             Sql( @"
