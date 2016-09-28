@@ -13,8 +13,8 @@
                 <div class="grid grid-panel">
                     <Rock:GridFilter ID="gfSettings" runat="server">
                         <Rock:RockTextBox ID="tbName" runat="server" Label="Reservation Name" />
-                        <Rock:RockDropDownList ID="ddlMinistry" runat="server" Label="Ministry" />
-                        <Rock:RockDropDownList ID="ddlStatus" runat="server" Label="Status" />
+                        <Rock:RockDropDownList ID="ddlMinistry" runat="server" Label="Ministry" DataTextField="Name" DataValueField="Id" />
+                        <Rock:RockDropDownList ID="ddlStatus" runat="server" Label="Status" DataTextField="Name" DataValueField="Id" />
                         <Rock:DateTimePicker ID="dtpStartDateTime" runat="server" Label="Start Date" />
                         <Rock:DateTimePicker ID="dtpEndDateTime" runat="server" Label="End Date" />
                         <Rock:PersonPicker ID="ppCreator" runat="server" Label="Created By" />

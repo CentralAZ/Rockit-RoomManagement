@@ -220,24 +220,32 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
         /// </summary>
         private void BindFilter()
         {
-
+            var rockContext = new RockContext();
 
             if ( !string.IsNullOrWhiteSpace( gfSettings.GetUserPreference( "Reservation Name" ) ) )
             {
                 tbName.Text = gfSettings.GetUserPreference( "Reservation Name" );
             }
 
+            var ministries = new ReservationMinistryService( rockContext ).Queryable().ToList();
+            ddlMinistry.Items.Insert( 0, new ListItem( string.Empty, string.Empty ) );
+            foreach ( var ministry in ministries )
+            {
+                ddlMinistry.Items.Add( new ListItem( ministry.Name, ministry.Id.ToString() ) );
+            }
             if ( !string.IsNullOrWhiteSpace( gfSettings.GetUserPreference( "Ministry" ) ) )
             {
-                ddlMinistry.BindToDefinedType( DefinedTypeCache.Read( new Guid( Rock.SystemGuid.DefinedType.DEVICE_TYPE ) ) );
-                ddlMinistry.Items.Insert( 0, new ListItem( string.Empty, string.Empty ) );
                 ddlMinistry.SetValue( gfSettings.GetUserPreference( "Ministry" ) );
             }
 
+            var statuses = new ReservationStatusService( rockContext ).Queryable().ToList();
+            ddlStatus.Items.Insert( 0, new ListItem( string.Empty, string.Empty ) );
+            foreach ( var status in statuses )
+            {
+                ddlStatus.Items.Add( new ListItem( status.Name, status.Id.ToString() ) );
+            }
             if ( !string.IsNullOrWhiteSpace( gfSettings.GetUserPreference( "Status" ) ) )
             {
-                ddlStatus.BindToDefinedType( DefinedTypeCache.Read( new Guid( Rock.SystemGuid.DefinedType.DEVICE_TYPE ) ) );
-                ddlStatus.Items.Insert( 0, new ListItem( string.Empty, string.Empty ) );
                 ddlStatus.SetValue( gfSettings.GetUserPreference( "Status" ) );
             }
 
@@ -316,7 +324,7 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
 
             // Filter by Resources
             var resourceIdList = rpResource.SelectedValuesAsInt().ToList();
-            if ( resourceIdList.Where(r=> r != 0).Any() )
+            if ( resourceIdList.Where( r => r != 0 ).Any() )
             {
                 qry = qry.Where( r => r.ReservationResources.Any( rr => resourceIdList.Contains( rr.ResourceId ) ) );
             }
