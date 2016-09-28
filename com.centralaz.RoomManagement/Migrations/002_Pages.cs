@@ -62,14 +62,13 @@ namespace com.centralaz.RoomManagement.Migrations
             RockMigrationHelper.AddPage( "7638AF8B-E4C0-4C02-93B8-72A829ECACDB", "D65F783D-87A9-4CC9-8110-E83466A0EADB", "Search Reservations", "", "1C58D731-F590-4AAC-8B8C-FD42B428B69A", "" ); // Site:Rock RMS
             RockMigrationHelper.UpdateBlockType( "Reservation List", "Block for viewing a list of reservations.", "~/Plugins/com_centralaz/RoomManagement/ReservationList.ascx", "com_centralaz > Room Management", "8169F541-9544-4A41-BD90-0DC2D0144AFD" );
             RockMigrationHelper.AddBlock( "1C58D731-F590-4AAC-8B8C-FD42B428B69A", "", "8169F541-9544-4A41-BD90-0DC2D0144AFD", "Reservation List", "Main", "", "", 0, "4D4882F8-5ACC-4AE1-BC75-4FFDDA26F270" );
-            RockMigrationHelper.AddBlockTypeAttribute( "8169F541-9544-4A41-BD90-0DC2D0144AFD", "BD53F9C9-EBA9-4D3F-82EA-DE5DD34A8108", "Detail Page", "DetailPage", "", "", 0, @"", "3DD653FB-771D-4EE5-8C75-1BF1B6F773B8" );
+            RockMigrationHelper.AddBlockTypeAttribute( "8169F541-9544-4A41-BD90-0DC2D0144AFD", "BD53F9C9-EBA9-4D3F-82EA-DE5DD34A8108", "Detail Page", "DetailPage", "", "", 0, @"4cbd2b96-e076-46df-a576-356bca5e577f", "3DD653FB-771D-4EE5-8C75-1BF1B6F773B8" );
 
             // Page: Available Resources
             RockMigrationHelper.AddPage( "7638AF8B-E4C0-4C02-93B8-72A829ECACDB", "D65F783D-87A9-4CC9-8110-E83466A0EADB", "Available Resources", "", "81CC9A85-06F6-43B9-8476-9DF8A987EF55", "" ); // Site:Rock RMS
             RockMigrationHelper.UpdateBlockType( "Availability List", "Block for viewing the availability of resources.", "~/Plugins/com_centralaz/RoomManagement/AvailabilityList.ascx", "com_centralaz > Room Management", "2A01E437-AB13-47B0-B3D4-96915801B693" );
             RockMigrationHelper.AddBlock( "81CC9A85-06F6-43B9-8476-9DF8A987EF55", "", "2A01E437-AB13-47B0-B3D4-96915801B693", "Availability List", "Main", "", "", 0, "1B4F3A33-656B-4FCB-A446-D481782DE8B4" );
-            RockMigrationHelper.AddBlockTypeAttribute( "2A01E437-AB13-47B0-B3D4-96915801B693", "BD53F9C9-EBA9-4D3F-82EA-DE5DD34A8108", "Detail Page", "DetailPage", "", "", 0, @"", "85ECB608-B64E-43C0-986C-FC8FD38F9D81" );
-            RockMigrationHelper.AddBlockAttributeValue( "1B4F3A33-656B-4FCB-A446-D481782DE8B4", "85ECB608-B64E-43C0-986C-FC8FD38F9D81", @"4cbd2b96-e076-46df-a576-356bca5e577f" ); // Detail Page
+            RockMigrationHelper.AddBlockTypeAttribute( "2A01E437-AB13-47B0-B3D4-96915801B693", "BD53F9C9-EBA9-4D3F-82EA-DE5DD34A8108", "Detail Page", "DetailPage", "", "", 0, @"4cbd2b96-e076-46df-a576-356bca5e577f", "85ECB608-B64E-43C0-986C-FC8FD38F9D81" );
 
             // Page: Admin Tools
             RockMigrationHelper.AddPage( "7638AF8B-E4C0-4C02-93B8-72A829ECACDB", "D65F783D-87A9-4CC9-8110-E83466A0EADB", "Admin Tools", "", "0FF1D7F4-BF6D-444A-BD71-645BD764EC40", "" ); // Site:Rock RMS
