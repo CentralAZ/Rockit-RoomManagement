@@ -23,11 +23,13 @@ StyleCop.Cache
 #specific folders
 [Oo]bj/
 RockWeb/Cache/*
+RockWeb/App_Data/*
 RockWeb/App_Data/PackageStaging
 com.centralaz.*/bin/Debug/*.*
 com.centralaz.*/bin/Debug/*/*.*
 com.centralaz.*/bin/Release/*.*
 com.centralaz.*/bin/Release/*/*.*
+com.centralaz.*/obj/Debug/*
 /scaffolding.config
 /packages/*.*
 *.sln.GhostDoc.xml
