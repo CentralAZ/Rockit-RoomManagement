@@ -233,6 +233,8 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
                 cpResource.Visible = false;
                 lipLocation.Visible = true;
             }
+
+            BindGrid();
         }
 
         #endregion
@@ -274,7 +276,7 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
         /// </summary>
         private void BindGrid()
         {
-            if ( rblResourceLocation.SelectedValue == "Locations" )
+            if ( rblResourceLocation.SelectedValue == "Location" )
             {
                 gLocations.Visible = true;
                 gResources.Visible = false;
@@ -315,6 +317,8 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             {
                 locationList = locationService.Queryable().ToList();
             }
+
+            locationList = locationList.Where( l => !String.IsNullOrWhiteSpace( l.Name ) ).ToList();
 
             // Filter by Time
             var today = RockDateTime.Today;

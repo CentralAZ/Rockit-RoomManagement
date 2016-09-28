@@ -13,11 +13,11 @@
                 <div class="grid grid-panel">
                     <Rock:GridFilter ID="gfSettings" runat="server">
                         <Rock:DateTimePicker ID="dtpStartDateTime" runat="server" Label="Start Date" />
-                        <asp:RadioButtonList ID="rblResourceLocation" runat="server" RepeatDirection="Vertical" CssClass="inputs-list"
+                        <Rock:RockRadioButtonList ID="rblResourceLocation" runat="server" RepeatDirection="Vertical" CssClass="inputs-list" Label="Search For"
                             OnSelectedIndexChanged="rblResourceLocation_SelectedIndexChanged" AutoPostBack="true">
-                            <asp:ListItem Value="Resource" Text="Search Resources" Selected="True"></asp:ListItem>
-                            <asp:ListItem Value="Location" Text="Search Locations"></asp:ListItem>
-                        </asp:RadioButtonList>
+                            <asp:ListItem Value="Resource" Text="Resources" Selected="True"></asp:ListItem>
+                            <asp:ListItem Value="Location" Text="Locations"></asp:ListItem>
+                        </Rock:RockRadioButtonList>
                         <Rock:CategoryPicker ID="cpResource" runat="server" Label="Resource Category" EntityTypeName="com.centralaz.RoomManagement.Model.Resource" />
                         <Rock:LocationItemPicker ID="lipLocation" runat="server" Label="Parent Location" Visible="false" />
                         <Rock:DateTimePicker ID="dtpEndDateTime" runat="server" Label="End Date" />
