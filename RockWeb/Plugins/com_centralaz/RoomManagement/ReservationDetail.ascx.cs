@@ -451,7 +451,6 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             {
                 nbQuantity.Text = reservationResource.Quantity.ToString();
                 srpResource.SetValue( reservationResource.ResourceId );
-
             }
             else
             {
@@ -516,7 +515,10 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
                 reservation = new Reservation { Id = 0 };
                 if ( PageParameter( "ResourceId" ).AsInteger() != 0 )
                 {
-                    srpResource.SetValue( PageParameter( "ResourceId" ).AsInteger() );
+                    ReservationResource reservationResource = new ReservationResource();
+                    reservationResource.ResourceId = PageParameter( "ResourceId" ).AsInteger();
+                    reservationResource.Quantity = 1;
+                    reservation.ReservationResources.Add( reservationResource );
                 }
 
                 if ( PageParameter( "LocationId" ).AsInteger() != 0 )
