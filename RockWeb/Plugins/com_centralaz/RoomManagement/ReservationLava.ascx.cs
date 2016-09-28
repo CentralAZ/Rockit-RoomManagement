@@ -34,7 +34,7 @@ using System.Text;
 using Rock.Security;
 
 using com.centralaz.RoomManagement.Model;
-
+using com.centralaz.RoomManagement.Web.Cache;
 namespace RockWeb.Plugins.com_centralaz.RoomManagement
 {
     [DisplayName( "Reservation Lava" )]
@@ -45,8 +45,7 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
     [LinkedPage( "Details Page", "Detail page for events", order: 2 )]
 
     [CustomRadioListField( "Campus Filter Display Mode", "", "1^Hidden, 2^Plain, 3^Panel Open, 4^Panel Closed", true, "1", order: 3 )]
-    [CustomRadioListField( "Audience Filter Display Mode", "", "1^Hidden, 2^Plain, 3^Panel Open, 4^Panel Closed", true, "1", key: "MinistryFilterDisplayMode", order: 4 )]
-    [DefinedValueField( Rock.SystemGuid.DefinedType.MARKETING_CAMPAIGN_AUDIENCE_TYPE, "Filter Audiences", "Determines which audiences should be displayed in the filter.", false, true, key: "FilterCategories", order: 5 )]
+    [CustomRadioListField( "Ministry Filter Display Mode", "", "1^Hidden, 2^Plain, 3^Panel Open, 4^Panel Closed", true, "1", key: "MinistryFilterDisplayMode", order: 4 )]
     [BooleanField( "Show Date Range Filter", "Determines whether the date range filters are shown", false, order: 6 )]
 
     [BooleanField( "Show Small Calendar", "Determines whether the calendar widget is shown", true, order: 7 )]
@@ -286,13 +285,13 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             }
 
             // Filter by Ministry
-            List<int> ministries = cblMinistry.Items.OfType<ListItem>().Where( l => l.Selected ).Select( a => a.Value.AsInteger() ).ToList();
-            if ( ministries.Any() )
+            List<int> ministryIds = cblMinistry.Items.OfType<ListItem>().Where( l => l.Selected ).Select( a => a.Value.AsInteger() ).ToList();
+            if ( ministryIds.Any() )
             {
                 qry = qry
                     .Where( r =>
                         !r.ReservationMinistryId.HasValue ||    // All
-                        campusIds.Contains( r.ReservationMinistryId.Value ) );
+                        ministryIds.Contains( r.ReservationMinistryId.Value ) );
             }
 
             // Filter by Time
@@ -394,8 +393,9 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             }
 
             // Setup Ministry Filter
-            var selectedMinistryGuids = GetAttributeValue( "FilterCategories" ).SplitDelimitedValues( true ).AsGuidList();
-            rcwMinistry.Visible = selectedMinistryGuids.Any() && GetAttributeValue( "MinistryFilterDisplayMode" ).AsInteger() > 1;
+            rcwMinistry.Visible = GetAttributeValue( "MinistryFilterDisplayMode" ).AsInteger() > 1;
+            cblMinistry.DataSource = ReservationMinistryCache.All();
+            cblMinistry.DataBind();
 
             // Date Range Filter
             drpDateRange.Visible = GetAttributeValue( "ShowDateRangeFilter" ).AsBoolean();

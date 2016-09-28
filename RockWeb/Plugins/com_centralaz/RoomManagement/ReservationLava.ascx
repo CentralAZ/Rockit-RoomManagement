@@ -65,7 +65,7 @@
 
                             <Rock:RockControlWrapper ID="rcwMinistry" runat="server" Label="Filter by Ministry">
                                 <div class="controls">
-                                    <asp:CheckBoxList ID="cblMinistry" RepeatDirection="Vertical" runat="server" DataTextField="Value" DataValueField="Id" OnSelectedIndexChanged="cblMinistry_SelectedIndexChanged" AutoPostBack="true" />
+                                    <asp:CheckBoxList ID="cblMinistry" RepeatDirection="Vertical" runat="server" DataTextField="Name" DataValueField="Id" OnSelectedIndexChanged="cblMinistry_SelectedIndexChanged" AutoPostBack="true" />
                                 </div>
                             </Rock:RockControlWrapper>
 
