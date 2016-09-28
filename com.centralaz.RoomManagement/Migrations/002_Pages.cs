@@ -106,9 +106,18 @@ namespace com.centralaz.RoomManagement.Migrations
             RockMigrationHelper.AddPage( "0FF1D7F4-BF6D-444A-BD71-645BD764EC40", "D65F783D-87A9-4CC9-8110-E83466A0EADB", "Reservation Configuration", "", "CFF84B6D-C852-4FC4-B602-9F045EDC8854", "fa fa-gear" ); // Site:Rock RMS
             RockMigrationHelper.UpdateBlockType( "Reservation Configuration", "Displays the details of the given Connection Type for editing.", "~/Plugins/com_centralaz/RoomManagement/ReservationConfiguration.ascx", "com_centralaz > Room Management", "6931E212-A76A-4DBB-9B97-86E5CDD0793A" );
             RockMigrationHelper.AddBlock( "CFF84B6D-C852-4FC4-B602-9F045EDC8854", "", "6931E212-A76A-4DBB-9B97-86E5CDD0793A", "Reservation Configuration", "Main", "", "", 0, "2B864E89-27DE-41F9-A24B-8D2EA5C40D10" );
+
+            // Add Security
+            RockMigrationHelper.AddSecurityRoleGroup( "RSR - Room Management Administration", "Group of individuals who can administration the custom Room Management module.", "FBE0324F-F29A-4ACF-8EC3-5386C5562D70" );
+            RockMigrationHelper.AddSecurityAuthForPage( "0FF1D7F4-BF6D-444A-BD71-645BD764EC40", 0, "View", true, Rock.SystemGuid.Group.GROUP_ADMINISTRATORS, Rock.Model.SpecialRole.None, "BB566890-2A22-40CA-ACD3-F8EB3EC51860" );
+            RockMigrationHelper.AddSecurityAuthForPage( "0FF1D7F4-BF6D-444A-BD71-645BD764EC40", 1, "View", true, "FBE0324F-F29A-4ACF-8EC3-5386C5562D70", Rock.Model.SpecialRole.None, "404EEA33-5551-4048-9A04-D9AEAA0B18B0" );
+            RockMigrationHelper.AddSecurityAuthForPage( "0FF1D7F4-BF6D-444A-BD71-645BD764EC40", 2, "View", false, "", Rock.Model.SpecialRole.AllUsers, "56FF0CCC-8129-4228-9060-206589A62B23" );
+            RockMigrationHelper.AddSecurityAuthForPage( "0FF1D7F4-BF6D-444A-BD71-645BD764EC40", 0, "Edit", true, "FBE0324F-F29A-4ACF-8EC3-5386C5562D70", Rock.Model.SpecialRole.None, "1EE92B5E-E44C-434C-AA50-2D6C22388A4D" );
         }
         public override void Down()
         {
+            RockMigrationHelper.DeleteSecurityRoleGroup( "FBE0324F-F29A-4ACF-8EC3-5386C5562D70" );
+
             RockMigrationHelper.DeleteBlock( "2B864E89-27DE-41F9-A24B-8D2EA5C40D10" );
             RockMigrationHelper.DeleteBlockType( "6931E212-A76A-4DBB-9B97-86E5CDD0793A" );
             RockMigrationHelper.DeletePage( "CFF84B6D-C852-4FC4-B602-9F045EDC8854" ); //  Page: Reservation Configuration
