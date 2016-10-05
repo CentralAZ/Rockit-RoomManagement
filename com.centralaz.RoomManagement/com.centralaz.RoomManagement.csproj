@@ -94,6 +94,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemGuid\DefinedType.cs" />
     <Compile Include="SystemGuid\EntityType.cs" />
+    <Compile Include="SystemGuid\ReservationStatus.cs" />
     <Compile Include="Web\Cache\ReservationMinistryCache.cs" />
     <Compile Include="Web\UI\Controls\Pickers\ScheduledLocationItemPicker.cs" />
     <Compile Include="Web\UI\Controls\Pickers\ScheduledResourcePicker.cs" />

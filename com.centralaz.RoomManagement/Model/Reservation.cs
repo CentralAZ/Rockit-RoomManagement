@@ -141,6 +141,22 @@ namespace com.centralaz.RoomManagement.Model
 
         }
 
+        /// <summary>
+        /// Creates a transaction to act a hook for workflow triggers before changes occur
+        /// </summary>
+        /// <param name="dbContext">The database context.</param>
+        /// <param name="entry">The entry.</param>
+        public override void PreSaveChanges( DbContext dbContext, System.Data.Entity.Infrastructure.DbEntityEntry entry )
+        {
+            if ( entry.State == System.Data.Entity.EntityState.Added )
+            {
+                var transaction = new Rock.Transactions.ConnectionRequestActivityChangeTransaction( entry );
+                Rock.Transactions.RockQueue.TransactionQueue.Enqueue( transaction );
+            }
+
+            base.PreSaveChanges( dbContext, entry );
+        }
+
         #endregion
 
     }
