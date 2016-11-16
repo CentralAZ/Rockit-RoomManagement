@@ -49,8 +49,10 @@ namespace com.centralaz.RoomManagement.Model
 
             var rockContext = new RockContext();
             var reservationService = new ReservationService( rockContext );
+            var deniedGuid = SystemGuid.ReservationStatus.DENIED.AsGuid();
+
             List<Reservation> newReservationList = new List<Reservation>() { reservation };
-            var currentReservationSummaries = reservationService.GetReservationSummaries( reservationService.Queryable().Where( r => r.Id != reservation.Id ), RockDateTime.Now.AddMonths( -1 ), RockDateTime.Now.AddYears( 1 ) );
+            var currentReservationSummaries = reservationService.GetReservationSummaries( reservationService.Queryable().Where( r => r.Id != reservation.Id && r.ReservationStatus.Guid != deniedGuid ), RockDateTime.Now.AddMonths( -1 ), RockDateTime.Now.AddYears( 1 ) );
 
             var reservedQuantities = reservationService.GetReservationSummaries( newReservationList.AsQueryable(), RockDateTime.Now.AddMonths( -1 ), RockDateTime.Now.AddYears( 1 ) )
                 .Select( newReservationSummary =>

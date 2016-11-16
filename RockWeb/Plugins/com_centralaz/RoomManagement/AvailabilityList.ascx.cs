@@ -297,7 +297,8 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
         {
             var rockContext = new RockContext();
             var reservationService = new ReservationService( rockContext );
-            var qry = reservationService.Queryable();
+            var deniedGuid = com.centralaz.RoomManagement.SystemGuid.ReservationStatus.DENIED.AsGuid();
+            var qry = reservationService.Queryable().Where( r => r.ReservationStatus.Guid != deniedGuid );
             var locationService = new LocationService( rockContext );
 
             List<int> locationIdList = new List<int>();
@@ -346,7 +347,8 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
             var rockContext = new RockContext();
             var reservationService = new ReservationService( rockContext );
             var resourceService = new ResourceService( rockContext );
-            var qry = reservationService.Queryable();
+            var deniedGuid = com.centralaz.RoomManagement.SystemGuid.ReservationStatus.DENIED.AsGuid();
+            var qry = reservationService.Queryable().Where( r => r.ReservationStatus.Guid != deniedGuid );
 
             List<int> resourceIdList = new List<int>();
             List<Resource> resourceList = new List<Resource>();
@@ -378,7 +380,7 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
                 var reservedResources = reservationSummaryList.Where( reservationSummary =>
                      ( reservationSummary.ReservationStartDateTime > filterStartDateTime || reservationSummary.ReservationEndDateTime > filterStartDateTime ) &&
                      ( reservationSummary.ReservationStartDateTime < filterEndDateTime || reservationSummary.ReservationEndDateTime < filterEndDateTime )
-                    ).DistinctBy(reservationSummary=> reservationSummary.Id).Sum( reservationSummary => reservationSummary.ReservationResources.Where( rr => rr.ResourceId == resource.Id ).Sum( rr => rr.Quantity ) );
+                    ).DistinctBy( reservationSummary => reservationSummary.Id ).Sum( reservationSummary => reservationSummary.ReservationResources.Where( rr => rr.ResourceId == resource.Id ).Sum( rr => rr.Quantity ) );
                 return new
                 {
                     Id = resource.Id,

@@ -93,8 +93,9 @@ namespace com.centralaz.RoomManagement.Model
 
         public List<int> GetReservedLocationIds( Reservation newReservation )
         {
+            var deniedGuid = SystemGuid.ReservationStatus.DENIED.AsGuid();
             var newReservationSummaries = GetReservationSummaries( new List<Reservation>() { newReservation }.AsQueryable(), RockDateTime.Now.AddMonths(-1), RockDateTime.Now.AddYears( 1 ) );
-            var reservedLocationIds = GetReservationSummaries( Queryable().Where( r => r.Id != newReservation.Id ), RockDateTime.Now.AddMonths( -1 ), RockDateTime.Now.AddYears( 1 ) )
+            var reservedLocationIds = GetReservationSummaries( Queryable().Where( r => r.Id != newReservation.Id && r.ReservationStatus.Guid != deniedGuid ), RockDateTime.Now.AddMonths( -1 ), RockDateTime.Now.AddYears( 1 ) )
                 .Where( currentReservationSummary => newReservationSummaries.Any( newReservationSummary =>
                  ( currentReservationSummary.ReservationStartDateTime > newReservationSummary.ReservationStartDateTime || currentReservationSummary.ReservationEndDateTime > newReservationSummary.ReservationStartDateTime ) &&
                  ( currentReservationSummary.ReservationStartDateTime < newReservationSummary.ReservationEndDateTime || currentReservationSummary.ReservationEndDateTime < newReservationSummary.ReservationEndDateTime )
