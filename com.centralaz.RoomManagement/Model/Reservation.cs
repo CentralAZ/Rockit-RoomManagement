@@ -166,7 +166,7 @@ namespace com.centralaz.RoomManagement.Model
         {
             if ( entry.State == System.Data.Entity.EntityState.Added )
             {
-                var transaction = new Rock.Transactions.ConnectionRequestActivityChangeTransaction( entry );
+                var transaction = new com.centralaz.RoomManagement.Transactions.ReservationChangeTransaction( entry );
                 Rock.Transactions.RockQueue.TransactionQueue.Enqueue( transaction );
             }
 

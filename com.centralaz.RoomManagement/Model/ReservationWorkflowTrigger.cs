@@ -115,19 +115,9 @@ public enum ReservationWorkflowTriggerType
     StatusChanged = 2,
 
     /// <summary>
-    /// The reservation started
-    /// </summary>
-    ReservationStarted = 3,
-
-    /// <summary>
-    /// The reservation overridden
-    /// </summary>
-    ReservationOverridden = 4,
-
-    /// <summary>
     /// The manual
     /// </summary>
-    Manual = 5
+    Manual = 3
 }
 
 #endregion

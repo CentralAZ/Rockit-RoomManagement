@@ -719,21 +719,7 @@ namespace RockWeb.Plugins.com_centralaz.RoomManagement
                         ddlSecondaryQualifier.Items.Clear();
                         break;
 
-                    case ReservationWorkflowTriggerType.ReservationOverridden:
-                        ddlPrimaryQualifier.Visible = false;
-                        ddlPrimaryQualifier.Items.Clear();
-                        ddlSecondaryQualifier.Visible = false;
-                        ddlSecondaryQualifier.Items.Clear();
-                        break;
-
                     case ReservationWorkflowTriggerType.Manual:
-                        ddlPrimaryQualifier.Visible = false;
-                        ddlPrimaryQualifier.Items.Clear();
-                        ddlSecondaryQualifier.Visible = false;
-                        ddlSecondaryQualifier.Items.Clear();
-                        break;
-
-                    case ReservationWorkflowTriggerType.ReservationStarted:
                         ddlPrimaryQualifier.Visible = false;
                         ddlPrimaryQualifier.Items.Clear();
                         ddlSecondaryQualifier.Visible = false;
