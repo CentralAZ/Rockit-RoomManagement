@@ -43,6 +43,16 @@ namespace com.centralaz.RoomManagement.Model
         public string Name { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this status is system.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this status is system; otherwise, <c>false</c>.
+        /// </value>
+        [Required]
+        [DataMember( IsRequired = true )]
+        public bool IsSystem { get; set; }
+
+        /// <summary>
         /// Gets or sets the description.
         /// </summary>
         /// <value>

@@ -31,6 +31,7 @@ namespace com.centralaz.RoomManagement.Migrations
             Sql( @"
                 CREATE TABLE [dbo].[_com_centralaz_RoomManagement_ReservationStatus](
 	                [Id] [int] IDENTITY(1,1) NOT NULL,
+                    [IsSystem] [bit] NOT NULL,
                     [Name] [nvarchar](50) NULL,
 	                [Description] [nvarchar] NULL,
 	                [IsCritical] [bit] NOT NULL,
