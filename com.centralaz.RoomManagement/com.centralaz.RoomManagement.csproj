@@ -95,14 +95,13 @@
     <Compile Include="SystemGuid\DefinedType.cs" />
     <Compile Include="SystemGuid\EntityType.cs" />
     <Compile Include="SystemGuid\ReservationStatus.cs" />
+    <Compile Include="Transactions\ReservationChangeTransaction.cs" />
     <Compile Include="Web\Cache\ReservationMinistryCache.cs" />
     <Compile Include="Web\UI\Controls\Pickers\ScheduledLocationItemPicker.cs" />
     <Compile Include="Web\UI\Controls\Pickers\ScheduledResourcePicker.cs" />
     <Compile Include="Web\UI\Controls\Pickers\ResourcePicker.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

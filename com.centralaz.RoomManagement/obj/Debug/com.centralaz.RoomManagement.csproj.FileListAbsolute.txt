@@ -234,3 +234,4 @@ C:\Users\TaylorC\Desktop\Rock\Rock Repos\Rockit-RoomManagement\com.centralaz.Roo
 C:\Users\TaylorC\Desktop\Rock\Rock Repos\Rockit-RoomManagement\com.centralaz.RoomManagement\bin\Debug\zh-Hant\Humanizer.resources.dll
 C:\Users\TaylorC\Desktop\Rock\Rock Repos\Rockit-RoomManagement\com.centralaz.RoomManagement\obj\Debug\com.centralaz.RoomManagement.dll
 C:\Users\TaylorC\Desktop\Rock\Rock Repos\Rockit-RoomManagement\com.centralaz.RoomManagement\obj\Debug\com.centralaz.RoomManagement.pdb
+C:\Users\TaylorC\Desktop\Rock\Rock Repos\Rockit-RoomManagement\com.centralaz.RoomManagement\obj\Debug\com.centralaz.RoomManagement.csprojResolveAssemblyReference.cache
