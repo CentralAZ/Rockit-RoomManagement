@@ -131,6 +131,7 @@ namespace com.centralaz.RoomManagement.Migrations
             RockMigrationHelper.AddSecurityAuthForPage( "0FF1D7F4-BF6D-444A-BD71-645BD764EC40", 1, "View", true, "FBE0324F-F29A-4ACF-8EC3-5386C5562D70", 0, "404EEA33-5551-4048-9A04-D9AEAA0B18B0" );
             RockMigrationHelper.AddSecurityAuthForPage( "0FF1D7F4-BF6D-444A-BD71-645BD764EC40", 2, "View", false, "", 1, "56FF0CCC-8129-4228-9060-206589A62B23" );
             RockMigrationHelper.AddSecurityAuthForPage( "0FF1D7F4-BF6D-444A-BD71-645BD764EC40", 0, "Edit", true, "FBE0324F-F29A-4ACF-8EC3-5386C5562D70", 0, "1EE92B5E-E44C-434C-AA50-2D6C22388A4D" );
+            RockMigrationHelper.AddSecurityAuthForPage( "0FF1D7F4-BF6D-444A-BD71-645BD764EC40", 0, "Administrate", true, "FBE0324F-F29A-4ACF-8EC3-5386C5562D70", 0, "70D9BC19-4328-4158-A110-46DE8E816F4E" );
         }
         public override void Down()
         {
